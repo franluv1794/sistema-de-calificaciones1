@@ -1,0 +1,1133 @@
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&display=swap');
+
+.mc-sec-page {
+  --mc-navy: #17324a;
+  --mc-teal: #0f766e;
+  --mc-teal-light: #eaf7f4;
+
+  --mc-text: #23384a;
+  --mc-muted: #71818e;
+
+  --mc-border: #e4eaed;
+  --mc-bg: #f7f9fa;
+  --mc-white: #ffffff;
+
+  width: 100%;
+  min-height: 100vh;
+
+  padding: 34px 38px 42px;
+
+  background: var(--mc-bg);
+  color: var(--mc-text);
+
+  font-family:
+    "DM Sans",
+    "Segoe UI",
+    sans-serif;
+}
+
+.mc-sec-page *,
+.mc-sec-page *::before,
+.mc-sec-page *::after {
+  box-sizing: border-box;
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.mc-sec-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+
+  margin-bottom: 26px;
+}
+
+.mc-sec-eyebrow {
+  display: block;
+
+  color: var(--mc-teal);
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.3px;
+}
+
+.mc-sec-header h2 {
+  margin: 6px 0 5px;
+
+  color: var(--mc-navy);
+
+  font-size: 28px;
+  font-weight: 750;
+
+  letter-spacing: -0.5px;
+}
+
+.mc-sec-header p {
+  margin: 0;
+
+  color: var(--mc-muted);
+
+  font-size: 13px;
+}
+
+.mc-sec-help-button {
+  width: 42px;
+  height: 42px;
+
+  border: 1px solid var(--mc-border);
+  border-radius: 10px;
+
+  background: white;
+
+  color: var(--mc-teal);
+
+  font-size: 17px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow:
+    0 5px 16px rgba(20, 50, 65, 0.05);
+
+  transition: 0.2s ease;
+}
+
+.mc-sec-help-button:hover {
+  background: var(--mc-teal);
+  color: white;
+
+  transform: translateY(-1px);
+}
+
+
+/* =========================================================
+   RESUMEN / COMPETENCIAS
+========================================================= */
+
+.mc-sec-summary {
+  padding: 20px;
+
+  margin-bottom: 16px;
+
+  background: white;
+
+  border: 1px solid var(--mc-border);
+  border-radius: 13px;
+
+  box-shadow:
+    0 7px 24px rgba(30, 55, 70, 0.045);
+}
+
+.mc-sec-summary-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  margin-bottom: 18px;
+}
+
+.mc-sec-summary-heading > div:first-child span,
+.mc-sec-summary-period span {
+  display: block;
+
+  color: var(--mc-muted);
+
+  font-size: 10px;
+}
+
+.mc-sec-summary-heading strong {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--mc-navy);
+
+  font-size: 15px;
+}
+
+.mc-sec-summary-period {
+  padding-left: 22px;
+
+  border-left: 1px solid var(--mc-border);
+
+  text-align: right;
+}
+
+.mc-sec-summary-period strong {
+  color: var(--mc-teal);
+
+  font-size: 12px;
+}
+
+
+/* =========================================================
+   TABS COMPETENCIAS
+========================================================= */
+
+.mc-sec-competency-selector {
+  display: grid;
+
+  grid-template-columns:
+    repeat(3, minmax(0, 1fr));
+
+  gap: 10px;
+}
+
+.mc-sec-competency-tab {
+  min-width: 0;
+
+  padding: 13px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  border: 1px solid var(--mc-border);
+  border-radius: 10px;
+
+  background: #fbfcfc;
+
+  color: var(--mc-text);
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    border-color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.mc-sec-competency-tab:hover {
+  border-color: #b9d8d4;
+
+  background: #f8fcfb;
+}
+
+.mc-sec-competency-tab.active {
+  border-color: #7bc9bd;
+
+  background: var(--mc-teal-light);
+
+  box-shadow:
+    inset 3px 0 0 var(--mc-teal);
+}
+
+.mc-sec-tab-code {
+  width: 34px;
+  height: 34px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 8px;
+
+  background: #e8edf0;
+
+  color: #627682;
+
+  font-size: 11px;
+  font-weight: 800;
+}
+
+.mc-sec-competency-tab.active
+.mc-sec-tab-code {
+  background: var(--mc-teal);
+  color: white;
+}
+
+.mc-sec-tab-info {
+  min-width: 0;
+}
+
+.mc-sec-tab-info strong {
+  display: block;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+
+  white-space: nowrap;
+
+  color: var(--mc-navy);
+
+  font-size: 12px;
+}
+
+.mc-sec-tab-info small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--mc-muted);
+
+  font-size: 10px;
+}
+
+.mc-sec-tab-check {
+  margin-left: auto;
+
+  color: var(--mc-teal);
+
+  font-size: 15px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   NUEVA ACTIVIDAD
+========================================================= */
+
+.mc-sec-new-activity {
+  min-height: 76px;
+
+  padding: 13px 16px;
+
+  margin-bottom: 18px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  background: white;
+
+  border: 1px solid var(--mc-border);
+  border-radius: 13px;
+}
+
+.mc-sec-new-icon {
+  width: 37px;
+  height: 37px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 9px;
+
+  background: var(--mc-teal-light);
+  color: var(--mc-teal);
+
+  font-size: 20px;
+}
+
+.mc-sec-new-title {
+  min-width: 190px;
+
+  margin-right: 4px;
+}
+
+.mc-sec-new-title strong {
+  display: block;
+
+  color: var(--mc-navy);
+
+  font-size: 12px;
+}
+
+.mc-sec-new-title span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--mc-muted);
+
+  font-size: 9px;
+}
+
+.mc-sec-new-activity select,
+.mc-sec-new-activity input {
+  height: 40px;
+
+  padding: 0 12px;
+
+  border: 1px solid #d8e1e4;
+  border-radius: 8px;
+
+  background: white;
+
+  color: var(--mc-text);
+
+  font-family: inherit;
+  font-size: 11px;
+
+  outline: none;
+
+  transition: border-color 0.2s ease;
+}
+
+.mc-sec-new-activity select {
+  flex: 1;
+  min-width: 200px;
+}
+
+.mc-sec-new-activity input {
+  width: 230px;
+}
+
+.mc-sec-new-activity select:focus,
+.mc-sec-new-activity input:focus {
+  border-color: #69b9ae;
+
+  box-shadow:
+    0 0 0 3px rgba(15, 118, 110, 0.07);
+}
+
+.mc-sec-create-button {
+  height: 40px;
+
+  padding: 0 17px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: var(--mc-teal);
+
+  color: white;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  white-space: nowrap;
+
+  transition: background 0.2s ease;
+}
+
+.mc-sec-create-button:hover {
+  background: #0b665f;
+}
+
+
+/* =========================================================
+   SECCIÓN DE CALIFICACIONES
+========================================================= */
+
+.mc-sec-grade-section {
+  overflow: hidden;
+
+  background: white;
+
+  border: 1px solid var(--mc-border);
+  border-radius: 14px;
+
+  box-shadow:
+    0 8px 28px rgba(30, 55, 70, 0.05);
+}
+
+
+/* =========================================================
+   CABECERA COMPETENCIA
+========================================================= */
+
+.mc-sec-grade-heading {
+  min-height: 105px;
+
+  padding: 22px 24px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-bottom: 1px solid var(--mc-border);
+}
+
+.mc-sec-current-code {
+  display: inline-block;
+
+  padding: 4px 7px;
+
+  border-radius: 5px;
+
+  background: var(--mc-teal-light);
+
+  color: var(--mc-teal);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.7px;
+}
+
+.mc-sec-grade-heading h3 {
+  max-width: 700px;
+
+  margin: 6px 0 3px;
+
+  color: var(--mc-navy);
+
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.mc-sec-grade-heading p {
+  margin: 0;
+
+  color: var(--mc-muted);
+
+  font-size: 11px;
+}
+
+.mc-sec-progress {
+  min-width: 120px;
+
+  padding-left: 20px;
+
+  border-left: 1px solid var(--mc-border);
+
+  text-align: right;
+}
+
+.mc-sec-progress strong {
+  display: block;
+
+  color: var(--mc-navy);
+
+  font-size: 19px;
+  font-weight: 750;
+}
+
+.mc-sec-progress strong span {
+  color: #a5b1b6;
+
+  font-size: 12px;
+  font-weight: 500;
+}
+
+.mc-sec-progress small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--mc-muted);
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   ACTIVIDADES
+========================================================= */
+
+.mc-sec-activity-pills {
+  padding: 15px 24px 13px;
+
+  display: flex;
+  flex-wrap: wrap;
+
+  gap: 7px;
+
+  border-bottom: 1px solid var(--mc-border);
+}
+
+.mc-sec-activity-pill {
+  padding: 6px 10px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 6px;
+
+  border: 1px solid #e1e8e9;
+  border-radius: 20px;
+
+  background: #fafcfc;
+
+  color: #596c76;
+
+  font-size: 10px;
+  font-weight: 600;
+}
+
+.mc-sec-activity-pill span {
+  width: 5px;
+  height: 5px;
+
+  border-radius: 50%;
+
+  background: #76b9af;
+}
+
+
+/* =========================================================
+   TABLA
+========================================================= */
+
+.mc-sec-table-wrapper {
+  width: 100%;
+
+  overflow-x: auto;
+}
+
+.mc-sec-grade-table {
+  width: 100%;
+
+  border-collapse: collapse;
+
+  table-layout: fixed;
+}
+
+.mc-sec-grade-table th {
+  height: 42px;
+
+  padding: 0 16px;
+
+  background: #f6f9fa;
+
+  border-bottom: 1px solid var(--mc-border);
+
+  color: #71838c;
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.6px;
+
+  text-align: center;
+}
+
+.mc-sec-grade-table th.student-column {
+  width: 35%;
+
+  text-align: left;
+}
+
+.mc-sec-grade-table td {
+  height: 58px;
+
+  padding: 7px 16px;
+
+  border-bottom: 1px solid #edf1f2;
+
+  text-align: center;
+}
+
+.mc-sec-grade-table tbody tr:last-child td {
+  border-bottom: none;
+}
+
+.mc-sec-grade-table tbody tr {
+  transition: background 0.15s ease;
+}
+
+.mc-sec-grade-table tbody tr:hover {
+  background: #fbfdfd;
+}
+
+
+/* =========================================================
+   ESTUDIANTE
+========================================================= */
+
+.student-cell {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  text-align: left;
+}
+
+.student-avatar {
+  width: 32px;
+  height: 32px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: #eaf4f2;
+  color: var(--mc-teal);
+
+  font-size: 9px;
+  font-weight: 800;
+}
+
+.student-cell strong {
+  display: block;
+
+  color: var(--mc-text);
+
+  font-size: 11px;
+  font-weight: 600;
+}
+
+.student-cell small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #9aa8ad;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   INPUTS DE NOTAS
+========================================================= */
+
+.grade-cell input {
+  width: 55px;
+  height: 32px;
+
+  padding: 0 7px;
+
+  border: 1px solid #d9e2e4;
+  border-radius: 7px;
+
+  background: white;
+
+  color: var(--mc-navy);
+
+  font-family: inherit;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  text-align: center;
+
+  outline: none;
+
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background 0.2s ease;
+}
+
+.grade-cell input:hover {
+  border-color: #b8cacc;
+}
+
+.grade-cell input:focus {
+  border-color: var(--mc-teal);
+
+  background: #f7fcfb;
+
+  box-shadow:
+    0 0 0 3px rgba(15, 118, 110, 0.08);
+}
+
+.grade-cell input::-webkit-inner-spin-button,
+.grade-cell input::-webkit-outer-spin-button {
+  opacity: 0;
+}
+
+
+/* =========================================================
+   SIN ACTIVIDADES
+========================================================= */
+
+.mc-sec-empty {
+  padding: 55px 20px;
+
+  text-align: center;
+}
+
+.mc-sec-empty-icon {
+  width: 42px;
+  height: 42px;
+
+  margin: 0 auto 12px;
+
+  border-radius: 50%;
+
+  background: var(--mc-teal-light);
+  color: var(--mc-teal);
+
+  display: grid;
+  place-items: center;
+
+  font-size: 20px;
+}
+
+.mc-sec-empty strong {
+  display: block;
+
+  color: var(--mc-navy);
+
+  font-size: 13px;
+}
+
+.mc-sec-empty p {
+  margin: 5px 0 0;
+
+  color: var(--mc-muted);
+
+  font-size: 10px;
+}
+
+
+/* =========================================================
+   BOTONES INFERIORES
+========================================================= */
+
+.mc-sec-actions {
+  min-height: 68px;
+
+  margin-top: 16px;
+  padding: 12px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: white;
+
+  border: 1px solid var(--mc-border);
+  border-radius: 12px;
+}
+
+.mc-sec-save-state {
+  display: flex;
+  align-items: center;
+
+  gap: 7px;
+
+  color: #71838c;
+
+  font-size: 10px;
+}
+
+.mc-sec-save-state span {
+  width: 7px;
+  height: 7px;
+
+  border-radius: 50%;
+
+  background: #43b58b;
+}
+
+.mc-sec-action-buttons {
+  display: flex;
+
+  gap: 8px;
+}
+
+.mc-sec-btn {
+  height: 36px;
+
+  padding: 0 14px;
+
+  border-radius: 7px;
+
+  font-family: inherit;
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.mc-sec-btn:hover {
+  transform: translateY(-1px);
+}
+
+.mc-sec-btn.secondary {
+  border: 1px solid #d8e2e4;
+
+  background: white;
+
+  color: var(--mc-text);
+}
+
+.mc-sec-btn.outline {
+  border: 1px solid #bcd5d2;
+
+  background: white;
+
+  color: var(--mc-teal);
+}
+
+.mc-sec-btn.primary {
+  border: 0;
+
+  background: var(--mc-navy);
+
+  color: white;
+}
+
+.mc-sec-btn.primary:hover {
+  background: #0d2538;
+}
+
+.mc-sec-btn.primary span {
+  margin-left: 7px;
+}
+
+
+/* =========================================================
+   MODAL
+========================================================= */
+
+.mc-sec-modal-overlay {
+  position: fixed;
+
+  inset: 0;
+
+  z-index: 5000;
+
+  display: grid;
+  place-items: center;
+
+  padding: 20px;
+
+  background: rgba(15, 35, 48, 0.38);
+
+  backdrop-filter: blur(3px);
+}
+
+.mc-sec-modal {
+  position: relative;
+
+  width: 100%;
+  max-width: 480px;
+
+  padding: 28px;
+
+  background: white;
+
+  border-radius: 15px;
+
+  box-shadow:
+    0 25px 70px rgba(10, 30, 45, 0.2);
+}
+
+.mc-sec-modal-close {
+  position: absolute;
+
+  top: 14px;
+  right: 14px;
+
+  width: 30px;
+  height: 30px;
+
+  border: 0;
+  border-radius: 7px;
+
+  background: #f3f6f7;
+
+  color: #6c7d86;
+
+  font-size: 19px;
+
+  cursor: pointer;
+}
+
+.mc-sec-modal-icon {
+  width: 38px;
+  height: 38px;
+
+  margin-bottom: 16px;
+
+  border-radius: 10px;
+
+  background: var(--mc-teal-light);
+  color: var(--mc-teal);
+
+  display: grid;
+  place-items: center;
+
+  font-weight: 800;
+}
+
+.mc-sec-modal h3 {
+  margin: 6px 0 20px;
+
+  color: var(--mc-navy);
+
+  font-size: 20px;
+}
+
+.mc-sec-steps {
+  display: flex;
+  flex-direction: column;
+
+  gap: 9px;
+}
+
+.mc-sec-steps > div {
+  display: flex;
+  align-items: center;
+
+  gap: 11px;
+
+  padding: 9px 10px;
+
+  border-radius: 8px;
+
+  background: #f7f9fa;
+}
+
+.mc-sec-steps b {
+  width: 24px;
+  height: 24px;
+
+  flex-shrink: 0;
+
+  display: grid;
+  place-items: center;
+
+  border-radius: 50%;
+
+  background: var(--mc-teal-light);
+  color: var(--mc-teal);
+
+  font-size: 9px;
+}
+
+.mc-sec-steps span {
+  color: #5d6e77;
+
+  font-size: 10px;
+}
+
+.mc-sec-modal-button {
+  width: 100%;
+
+  height: 38px;
+
+  margin-top: 20px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: var(--mc-teal);
+
+  color: white;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   RESPONSIVE
+========================================================= */
+
+@media (max-width: 1000px) {
+
+  .mc-sec-page {
+    padding: 28px 24px 35px;
+  }
+
+  .mc-sec-competency-selector {
+    grid-template-columns: 1fr;
+  }
+
+  .mc-sec-new-activity {
+    flex-wrap: wrap;
+  }
+
+  .mc-sec-new-title {
+    flex: 1;
+  }
+
+  .mc-sec-new-activity select {
+    width: 100%;
+    flex: none;
+  }
+
+  .mc-sec-new-activity input {
+    flex: 1;
+    width: auto;
+  }
+}
+
+
+@media (max-width: 700px) {
+
+  .mc-sec-page {
+    padding: 22px 15px 30px;
+  }
+
+  .mc-sec-header h2 {
+    font-size: 23px;
+  }
+
+  .mc-sec-summary-heading {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .mc-sec-summary-period {
+    padding-left: 0;
+
+    border-left: 0;
+
+    text-align: left;
+  }
+
+  .mc-sec-new-activity {
+    align-items: stretch;
+    flex-direction: column;
+  }
+
+  .mc-sec-new-title {
+    min-width: 0;
+  }
+
+  .mc-sec-new-activity select,
+  .mc-sec-new-activity input {
+    width: 100%;
+  }
+
+  .mc-sec-create-button {
+    width: 100%;
+  }
+
+  .mc-sec-grade-heading {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 16px;
+  }
+
+  .mc-sec-progress {
+    width: 100%;
+
+    padding: 12px 0 0;
+
+    border-left: 0;
+    border-top: 1px solid var(--mc-border);
+
+    text-align: left;
+  }
+
+  .mc-sec-actions {
+    align-items: stretch;
+    flex-direction: column;
+
+    gap: 12px;
+  }
+
+  .mc-sec-action-buttons {
+    flex-direction: column;
+  }
+
+  .mc-sec-btn {
+    width: 100%;
+  }
+}   

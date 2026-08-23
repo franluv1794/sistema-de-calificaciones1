@@ -1,0 +1,1225 @@
+
+@import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Plus+Jakarta+Sans:wght@600;700;800&display=swap');
+
+/* =========================================================
+   DASHBOARD MAESTRO - NUEVO DISEÑO
+   Solo apariencia.
+   No modifica lógica, API ni navegación.
+========================================================= */
+
+:root {
+  --dn-ink: #172a3b;
+  --dn-muted: #70808f;
+  --dn-light-muted: #91a0aa;
+
+  --dn-line: #e6edef;
+  --dn-surface: #ffffff;
+  --dn-background: #f6f9fa;
+
+  --dn-teal: #0f766e;
+  --dn-teal-light: #e8f6f3;
+
+  --dn-blue: #2563eb;
+  --dn-blue-light: #edf3ff;
+
+  --dn-amber: #d97706;
+  --dn-amber-light: #fff6e8;
+
+  --dn-navy: #102d43;
+  --dn-navy-light: #193a50;
+
+  --dn-green: #32ba87;
+
+  --dn-shadow: 0 14px 38px rgba(30, 58, 72, 0.07);
+}
+
+
+/* =========================================================
+   RESET
+========================================================= */
+
+.maestro-layout {
+  min-height: 100vh;
+  width: 100%;
+
+  background: var(--dn-background);
+  color: var(--dn-ink);
+
+  font-family: "DM Sans", sans-serif;
+}
+
+.maestro-layout *,
+.maestro-layout *::before,
+.maestro-layout *::after {
+  box-sizing: border-box;
+}
+
+.maestro-layout button {
+  font-family: inherit;
+}
+
+
+/* =========================================================
+   SIDEBAR
+========================================================= */
+
+.maestro-sidebar {
+  position: fixed;
+
+  top: 0;
+  left: 0;
+  bottom: 0;
+
+  width: 250px;
+
+  padding: 26px 17px 18px;
+
+  background: var(--dn-navy);
+  color: #d7e6ea;
+
+  display: flex;
+  flex-direction: column;
+
+  z-index: 1000;
+}
+
+
+/* =========================================================
+   LOGO
+========================================================= */
+
+.sidebar-brand {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  padding: 0 13px 34px;
+}
+
+.brand-logo {
+  width: 32px;
+  height: 32px;
+
+  border-radius: 9px;
+
+  background: #34c2a4;
+
+  display: grid;
+  place-items: center;
+
+  overflow: hidden;
+
+  flex-shrink: 0;
+}
+
+.brand-logo img {
+  width: 100%;
+  height: 100%;
+
+  object-fit: contain;
+}
+
+.brand-name {
+  color: #ffffff;
+
+  font-family: "Plus Jakarta Sans", sans-serif;
+
+  font-size: 22px;
+  font-weight: 800;
+
+  letter-spacing: -0.5px;
+}
+
+.brand-name strong {
+  color: #54d8ba;
+}
+
+
+/* =========================================================
+   PERFIL DEL MAESTRO
+========================================================= */
+
+.sidebar-profile {
+  width: 100%;
+
+  padding: 11px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  background: var(--dn-navy-light);
+
+  border: 1px solid #285068;
+  border-radius: 13px;
+}
+
+.profile-avatar {
+  width: 35px;
+  height: 35px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #ddf4ee;
+  color: var(--dn-teal);
+
+  display: grid;
+  place-items: center;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+.profile-info {
+  min-width: 0;
+}
+
+.profile-info strong {
+  display: block;
+
+  max-width: 130px;
+
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.profile-info span {
+  display: block;
+
+  margin-top: 2px;
+
+  color: #8aa9b4;
+
+  font-size: 11px;
+}
+
+.profile-more {
+  margin-left: auto;
+
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #83a5b1;
+
+  font-size: 14px;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   NAVEGACIÓN
+========================================================= */
+
+.sidebar-nav {
+  margin-top: 25px;
+
+  width: 100%;
+}
+
+.nav-section-title {
+  display: block;
+
+  margin: 0 13px 9px;
+
+  color: #7094a2;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.2px;
+}
+
+.gestion-title {
+  margin-top: 28px;
+}
+
+.nav-item {
+  width: 100%;
+
+  min-height: 42px;
+
+  margin: 3px 0;
+  padding: 10px 13px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  border: 0;
+  border-radius: 9px;
+
+  background: transparent;
+
+  color: #b5cdd3;
+
+  font-size: 13px;
+  font-weight: 500;
+
+  text-align: left;
+
+  cursor: pointer;
+
+  transition:
+    background 0.2s ease,
+    color 0.2s ease,
+    transform 0.2s ease;
+}
+
+.nav-item:hover {
+  background: #1c435a;
+  color: #ffffff;
+}
+
+.nav-item.active {
+  background: #215269;
+  color: #ffffff;
+}
+
+.nav-icon {
+  width: 18px;
+
+  flex-shrink: 0;
+
+  color: #7fa8b5;
+
+  font-size: 17px;
+
+  text-align: center;
+}
+
+.nav-item.active .nav-icon {
+  color: #66d1b8;
+}
+
+.nav-badge {
+  margin-left: auto;
+
+  min-width: 21px;
+
+  padding: 2px 6px;
+
+  border-radius: 5px;
+
+  background: #2d786f;
+
+  color: #baf1e3;
+
+  font-size: 10px;
+  font-weight: 800;
+
+  text-align: center;
+}
+
+
+/* =========================================================
+   AYUDA
+========================================================= */
+
+.sidebar-help {
+  margin-top: auto;
+
+  padding: 14px;
+
+  display: flex;
+  align-items: flex-start;
+
+  gap: 10px;
+
+  background: #214458;
+
+  border: 1px solid #2d5b6c;
+  border-radius: 13px;
+}
+
+.help-circle {
+  width: 29px;
+  height: 29px;
+
+  flex-shrink: 0;
+
+  border-radius: 50%;
+
+  background: #2d6673;
+  color: #9ce0d0;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 13px;
+  font-weight: 800;
+}
+
+.help-content {
+  min-width: 0;
+}
+
+.help-content strong {
+  display: block;
+
+  color: #ffffff;
+
+  font-size: 12px;
+}
+
+.help-content span {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #9bb7be;
+
+  font-size: 10px;
+}
+
+.help-content button {
+  margin-top: 7px;
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #62ceb5;
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+
+/* =========================================================
+   FOOTER SIDEBAR
+========================================================= */
+
+.sidebar-footer {
+  padding: 18px 9px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  color: #6f96a2;
+
+  font-size: 10px;
+}
+
+.logout-button {
+  width: 28px;
+  height: 28px;
+
+  border: 0;
+  background: transparent;
+
+  color: #78a0ab;
+
+  font-size: 17px;
+
+  cursor: pointer;
+
+  transition: color 0.2s ease;
+}
+
+.logout-button:hover {
+  color: #ffffff;
+}
+
+
+/* =========================================================
+   ÁREA PRINCIPAL
+========================================================= */
+
+.maestro-main {
+  min-height: 100vh;
+
+  margin-left: 250px;
+
+  background: var(--dn-background);
+}
+
+
+/* =========================================================
+   TOPBAR
+========================================================= */
+
+.maestro-topbar {
+  height: 70px;
+
+  padding: 0 38px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  background: #ffffff;
+
+  border-bottom: 1px solid var(--dn-line);
+}
+
+.breadcrumb {
+  display: flex;
+  align-items: center;
+
+  gap: 10px;
+
+  color: var(--dn-light-muted);
+
+  font-size: 12px;
+}
+
+.breadcrumb i {
+  color: #bac6ca;
+
+  font-style: normal;
+}
+
+.breadcrumb strong {
+  color: var(--dn-ink);
+
+  font-weight: 600;
+}
+
+.topbar-actions {
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+}
+
+.topbar-icon {
+  position: relative;
+
+  width: 32px;
+  height: 32px;
+
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: #667b87;
+
+  font-size: 20px;
+
+  cursor: pointer;
+}
+
+.topbar-icon:hover {
+  color: var(--dn-ink);
+}
+
+.notification span {
+  position: absolute;
+
+  top: 3px;
+  right: 2px;
+
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: #e8745e;
+
+  border: 1px solid #ffffff;
+}
+
+.top-avatar {
+  width: 34px;
+  height: 34px;
+
+  border-radius: 50%;
+
+  background: #d8f1eb;
+  color: var(--dn-teal);
+
+  display: grid;
+  place-items: center;
+
+  font-size: 10px;
+  font-weight: 800;
+}
+
+
+/* =========================================================
+   CONTENIDO
+========================================================= */
+
+.dashboard-content {
+  width: 100%;
+  max-width: 1450px;
+
+  margin: 0 auto;
+
+  padding: 36px 40px 50px;
+}
+
+
+/* =========================================================
+   ENCABEZADO
+========================================================= */
+
+.dashboard-heading {
+  margin-bottom: 30px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+
+  gap: 30px;
+}
+
+.dashboard-eyebrow,
+.section-eyebrow {
+  display: block;
+
+  color: var(--dn-teal);
+
+  font-size: 10px;
+  font-weight: 800;
+
+  letter-spacing: 1.4px;
+}
+
+.dashboard-heading h1 {
+  margin: 7px 0 5px;
+
+  color: var(--dn-ink);
+
+  font-family: "Plus Jakarta Sans", sans-serif;
+
+  font-size: 31px;
+  font-weight: 800;
+
+  line-height: 1.2;
+
+  letter-spacing: -0.7px;
+}
+
+.dashboard-heading p {
+  margin: 0;
+
+  color: var(--dn-muted);
+
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+.dashboard-primary-button {
+  flex-shrink: 0;
+
+  padding: 11px 17px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 9px;
+
+  border: 0;
+  border-radius: 8px;
+
+  background: var(--dn-teal);
+  color: #ffffff;
+
+  font-size: 12px;
+  font-weight: 700;
+
+  cursor: pointer;
+
+  box-shadow: 0 7px 17px rgba(15, 118, 110, 0.15);
+
+  transition:
+    transform 0.2s ease,
+    background 0.2s ease;
+}
+
+.dashboard-primary-button:hover {
+  background: #0c665f;
+
+  transform: translateY(-1px);
+}
+
+.dashboard-primary-button span {
+  font-size: 15px;
+}
+
+
+/* =========================================================
+   RESUMEN
+========================================================= */
+
+.summary-section {
+  margin-bottom: 30px;
+}
+
+.section-heading {
+  margin-bottom: 15px;
+}
+
+.section-heading h2,
+.courses-header h2 {
+  margin: 5px 0 0;
+
+  color: var(--dn-ink);
+
+  font-family: "Plus Jakarta Sans", sans-serif;
+
+  font-size: 20px;
+  font-weight: 700;
+
+  line-height: 1.3;
+}
+
+
+/* =========================================================
+   ESTADÍSTICAS
+========================================================= */
+
+.stats-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 15px;
+}
+
+.stat-card {
+  min-height: 96px;
+
+  padding: 17px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 13px;
+
+  background: var(--dn-surface);
+
+  border: 1px solid var(--dn-line);
+  border-radius: 12px;
+
+  box-shadow: var(--dn-shadow);
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+
+  box-shadow: 0 17px 40px rgba(30, 58, 72, 0.09);
+}
+
+.stat-icon {
+  width: 42px;
+  height: 42px;
+
+  flex-shrink: 0;
+
+  border-radius: 10px;
+
+  display: grid;
+  place-items: center;
+
+  font-size: 18px;
+}
+
+.stat-icon.teal {
+  background: var(--dn-teal-light);
+  color: var(--dn-teal);
+}
+
+.stat-icon.blue {
+  background: var(--dn-blue-light);
+  color: var(--dn-blue);
+}
+
+.stat-icon.amber {
+  background: var(--dn-amber-light);
+  color: var(--dn-amber);
+}
+
+.stat-content {
+  min-width: 0;
+}
+
+.stat-content span {
+  display: block;
+
+  color: var(--dn-muted);
+
+  font-size: 10px;
+}
+
+.stat-content strong {
+  display: block;
+
+  margin-top: 3px;
+
+  color: var(--dn-ink);
+
+  font-family: "Plus Jakarta Sans", sans-serif;
+
+  font-size: 20px;
+  font-weight: 800;
+
+  line-height: 1.2;
+}
+
+.stat-content small {
+  display: block;
+
+  margin-top: 3px;
+
+  color: #9aa8ae;
+
+  font-size: 9px;
+}
+
+
+/* =========================================================
+   SECCIÓN CURSOS
+========================================================= */
+
+.courses-section {
+  padding: 25px;
+
+  background: #ffffff;
+
+  border: 1px solid var(--dn-line);
+  border-radius: 14px;
+
+  box-shadow: var(--dn-shadow);
+}
+
+.courses-header {
+  margin-bottom: 20px;
+
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+}
+
+.courses-header p {
+  margin: 5px 0 0;
+
+  color: var(--dn-muted);
+
+  font-size: 12px;
+}
+
+.view-all-button {
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--dn-teal);
+
+  font-size: 11px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.view-all-button:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   CARDS DE CURSOS
+========================================================= */
+
+.course-grid {
+  display: grid;
+
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+
+  gap: 16px;
+}
+
+.course-card {
+  overflow: hidden;
+
+  background: #ffffff;
+
+  border: 1px solid var(--dn-line);
+  border-radius: 11px;
+
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    border-color 0.2s ease;
+}
+
+.course-card:hover {
+  transform: translateY(-3px);
+
+  border-color: #cbdedd;
+
+  box-shadow: 0 13px 30px rgba(30, 58, 72, 0.09);
+}
+
+
+/* =========================================================
+   PARTE SUPERIOR CARD
+========================================================= */
+
+.course-card-top {
+  padding: 16px 16px 0;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.course-icon {
+  width: 38px;
+  height: 38px;
+
+  border-radius: 10px;
+
+  background: var(--dn-teal-light);
+  color: var(--dn-teal);
+
+  display: grid;
+  place-items: center;
+
+  font-size: 17px;
+}
+
+.course-status {
+  padding: 5px 8px;
+
+  display: flex;
+  align-items: center;
+
+  gap: 5px;
+
+  border-radius: 20px;
+
+  background: #effaf5;
+  color: #19815e;
+
+  font-size: 9px;
+  font-weight: 700;
+}
+
+.course-status i {
+  width: 6px;
+  height: 6px;
+
+  border-radius: 50%;
+
+  background: var(--dn-green);
+}
+
+
+/* =========================================================
+   INFORMACIÓN CARD
+========================================================= */
+
+.course-card-body {
+  padding: 14px 16px 17px;
+}
+
+.course-level {
+  display: block;
+
+  color: var(--dn-teal);
+
+  font-size: 9px;
+  font-weight: 800;
+
+  letter-spacing: 0.9px;
+
+  text-transform: uppercase;
+}
+
+.course-card-body h3 {
+  margin: 5px 0 4px;
+
+  color: var(--dn-ink);
+
+  font-family: "Plus Jakarta Sans", sans-serif;
+
+  font-size: 16px;
+  font-weight: 700;
+
+  line-height: 1.25;
+
+  text-transform: capitalize;
+}
+
+.course-card-body p {
+  margin: 0;
+
+  color: var(--dn-muted);
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   FOOTER CARD
+========================================================= */
+
+.course-card-footer {
+  min-height: 43px;
+
+  padding: 10px 16px;
+
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+
+  border-top: 1px solid var(--dn-line);
+}
+
+.course-card-footer span {
+  color: var(--dn-muted);
+
+  font-size: 10px;
+}
+
+.course-card-footer button {
+  padding: 0;
+
+  border: 0;
+  background: transparent;
+
+  color: var(--dn-teal);
+
+  font-size: 10px;
+  font-weight: 700;
+
+  cursor: pointer;
+}
+
+.course-card-footer button:hover {
+  text-decoration: underline;
+}
+
+
+/* =========================================================
+   SIN ASIGNACIONES
+========================================================= */
+
+.empty-courses {
+  padding: 45px 20px;
+
+  border: 1px dashed #ccd9dc;
+  border-radius: 12px;
+
+  text-align: center;
+}
+
+.empty-icon {
+  width: 45px;
+  height: 45px;
+
+  margin: 0 auto 10px;
+
+  border-radius: 50%;
+
+  background: var(--dn-teal-light);
+  color: var(--dn-teal);
+
+  display: grid;
+  place-items: center;
+
+  font-size: 21px;
+}
+
+.empty-courses h3 {
+  margin: 0;
+
+  color: var(--dn-ink);
+
+  font-size: 14px;
+}
+
+.empty-courses p {
+  margin: 5px 0 0;
+
+  color: var(--dn-muted);
+
+  font-size: 11px;
+}
+
+
+/* =========================================================
+   TABLET
+========================================================= */
+
+@media (max-width: 1200px) {
+
+  .maestro-sidebar {
+    width: 225px;
+  }
+
+  .maestro-main {
+    margin-left: 225px;
+  }
+
+  .dashboard-content {
+    padding: 32px;
+  }
+
+  .course-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+}
+
+
+/* =========================================================
+   TABLET PEQUEÑA
+========================================================= */
+
+@media (max-width: 900px) {
+
+  .maestro-sidebar {
+    width: 210px;
+  }
+
+  .maestro-main {
+    margin-left: 210px;
+  }
+
+  .dashboard-content {
+    padding: 28px 24px 40px;
+  }
+
+  .maestro-topbar {
+    padding: 0 24px;
+  }
+
+  .stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .dashboard-heading {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .dashboard-primary-button {
+    width: 100%;
+
+    justify-content: center;
+  }
+
+}
+
+
+/* =========================================================
+   MÓVIL
+========================================================= */
+
+@media (max-width: 700px) {
+
+  .maestro-sidebar {
+    display: none;
+  }
+
+  .maestro-main {
+    margin-left: 0;
+  }
+
+  .maestro-topbar {
+    height: 62px;
+
+    padding: 0 17px;
+  }
+
+  .breadcrumb {
+    font-size: 11px;
+  }
+
+  .topbar-actions {
+    gap: 6px;
+  }
+
+  .dashboard-content {
+    padding: 25px 16px 35px;
+  }
+
+  .dashboard-heading {
+    margin-bottom: 25px;
+  }
+
+  .dashboard-heading h1 {
+    font-size: 25px;
+  }
+
+  .dashboard-heading p {
+    font-size: 12px;
+  }
+
+  .courses-section {
+    padding: 18px;
+  }
+
+  .courses-header {
+    align-items: flex-start;
+    flex-direction: column;
+
+    gap: 10px;
+  }
+
+  .course-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stat-card {
+    min-height: 88px;
+  }
+
+}
+
+
+/* =========================================================
+   MÓVIL MUY PEQUEÑO
+========================================================= */
+
+@media (max-width: 420px) {
+
+  .dashboard-content {
+    padding: 22px 13px 30px;
+  }
+
+  .dashboard-heading h1 {
+    font-size: 22px;
+  }
+
+  .courses-section {
+    padding: 15px;
+  }
+
+  .stat-card {
+    padding: 14px;
+  }
+
+  .stat-icon {
+    width: 38px;
+    height: 38px;
+  }
+
+}
+
