@@ -11,7 +11,7 @@ interface Estudiante {
   activo: boolean;
   usuario: string | null;
   cursoActual: string | null;
-    Nivel: string | null;
+  Nivel: string | null;
 }
 
 interface AnioEscolar {
@@ -26,15 +26,28 @@ const EstudiantesPage = () => {
   const [archivo, setArchivo] = useState<File | null>(null);
   const [idAnioEscolar, setIdAnioEscolar] = useState("");
   const [resultado, setResultado] = useState<any>(null);
+  const [cargando, setCargando] = useState(false);
 
   const cargarDatos = async () => {
-    const [resEstudiantes, resAnios] = await Promise.all([
-      api.get("/Estudiantes"),
-      api.get("/AniosEscolares"),
-    ]);
+    try {
+      setCargando(true);
 
-    setEstudiantes(resEstudiantes.data);
-    setAnios(resAnios.data);
+      const [resEstudiantes, resAnios] = await Promise.all([
+        api.get("/Estudiantes"),
+        api.get("/AniosEscolares"),
+      ]);
+
+      // Para comprobar exactamente qué está llegando del backend
+      console.log("ESTUDIANTES RECIBIDOS:", resEstudiantes.data);
+
+      setEstudiantes(resEstudiantes.data);
+      setAnios(resAnios.data);
+    } catch (error) {
+      console.error("Error cargando estudiantes:", error);
+      alert("No se pudieron cargar los estudiantes.");
+    } finally {
+      setCargando(false);
+    }
   };
 
   useEffect(() => {
@@ -49,33 +62,60 @@ const EstudiantesPage = () => {
       return;
     }
 
-    const formData = new FormData();
-    formData.append("archivo", archivo);
+    try {
+      setCargando(true);
 
-    const res = await api.post(
-      `/ImportacionExcel/estudiantes?idAnioEscolar=${idAnioEscolar}`,
-      formData,
-      {
-        headers: {
-          "Content-Type": "multipart/form-data",
-        },
-      }
-    );
+      const formData = new FormData();
+      formData.append("archivo", archivo);
 
-    setResultado(res.data);
-    setArchivo(null);
-    cargarDatos();
+      const res = await api.post(
+        `/ImportacionExcel/estudiantes?idAnioEscolar=${idAnioEscolar}`,
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setResultado(res.data);
+      setArchivo(null);
+
+      // Volver a cargar la lista después de importar
+      await cargarDatos();
+    } catch (error: any) {
+      console.error("Error importando estudiantes:", error);
+
+      alert(
+        error.response?.data?.mensaje ||
+        error.response?.data ||
+        "Ocurrió un error al importar los estudiantes."
+      );
+    } finally {
+      setCargando(false);
+    }
   };
 
   const cambiarEstado = async (id: number) => {
-    await api.put(`/Estudiantes/${id}/estado`);
-    cargarDatos();
+    try {
+      await api.put(`/Estudiantes/${id}/estado`);
+
+      await cargarDatos();
+    } catch (error: any) {
+      console.error("Error cambiando estado:", error);
+
+      alert(
+        error.response?.data ||
+        "No se pudo cambiar el estado del estudiante."
+      );
+    }
   };
 
   return (
     <div>
       <h1>Estudiantes</h1>
 
+      {/* IMPORTAR ESTUDIANTES */}
       <form onSubmit={importarExcel} className="form-card">
         <select
           value={idAnioEscolar}
@@ -83,8 +123,12 @@ const EstudiantesPage = () => {
           required
         >
           <option value="">Seleccione año escolar</option>
+
           {anios.map((anio) => (
-            <option key={anio.idAnioEscolar} value={anio.idAnioEscolar}>
+            <option
+              key={anio.idAnioEscolar}
+              value={anio.idAnioEscolar}
+            >
               {anio.nombre} {anio.activo ? "(Activo)" : ""}
             </option>
           ))}
@@ -93,32 +137,52 @@ const EstudiantesPage = () => {
         <input
           type="file"
           accept=".xlsx,.xls"
-          onChange={(e) => setArchivo(e.target.files?.[0] ?? null)}
+          onChange={(e) =>
+            setArchivo(e.target.files?.[0] ?? null)
+          }
           required
         />
 
-        <button type="submit">Importar estudiantes</button>
+        <button type="submit" disabled={cargando}>
+          {cargando ? "Procesando..." : "Importar estudiantes"}
+        </button>
       </form>
 
+      {/* RESULTADO DE IMPORTACIÓN */}
       {resultado && (
-        <div className="card" style={{ marginBottom: 20 }}>
+        <div
+          className="card"
+          style={{ marginBottom: 20 }}
+        >
           <h3>Resultado de importación</h3>
-          <p>Total: {resultado.total}</p>
-          <p>Exitosos: {resultado.exitosos}</p>
-          <p>Fallidos: {resultado.fallidos}</p>
+
+          <p>
+            Total: {resultado.total}
+          </p>
+
+          <p>
+            Exitosos: {resultado.exitosos}
+          </p>
+
+          <p>
+            Fallidos: {resultado.fallidos}
+          </p>
 
           {resultado.errores?.length > 0 && (
             <ul>
-              {resultado.errores.map((err: any, index: number) => (
-                <li key={index}>
-                  Fila {err.fila}: {err.error}
-                </li>
-              ))}
+              {resultado.errores.map(
+                (err: any, index: number) => (
+                  <li key={index}>
+                    Fila {err.fila}: {err.error}
+                  </li>
+                )
+              )}
             </ul>
           )}
         </div>
       )}
 
+      {/* TABLA */}
       <table className="data-table">
         <thead>
           <tr>
@@ -136,24 +200,57 @@ const EstudiantesPage = () => {
         </thead>
 
         <tbody>
-          {estudiantes.map((e) => (
-            <tr key={e.idEstudiante}>
-              <td>{e.idEstudiante}</td>
-              <td>{e.matricula}</td>
-              <td>{e.usuario}</td>
-              <td>{e.nombres} {e.apellidos}</td>
-              <td>{e.cursoActual}</td>
-              <td>{e.Nivel}</td>
-              <td>{e.telefono}</td>
-              <td>{e.correo}</td>
-              <td>{e.activo ? "Activo" : "Inactivo"}</td>
-              <td>
-                <button onClick={() => cambiarEstado(e.idEstudiante)}>
-                  {e.activo ? "Desactivar" : "Activar"}
-                </button>
+          {cargando ? (
+            <tr>
+              <td colSpan={10} style={{ textAlign: "center" }}>
+                Cargando estudiantes...
               </td>
             </tr>
-          ))}
+          ) : estudiantes.length === 0 ? (
+            <tr>
+              <td colSpan={10} style={{ textAlign: "center" }}>
+                No hay estudiantes para mostrar.
+              </td>
+            </tr>
+          ) : (
+            estudiantes.map((e) => (
+              <tr key={e.idEstudiante}>
+                <td>{e.idEstudiante}</td>
+
+                <td>{e.matricula}</td>
+
+                <td>{e.usuario ?? "—"}</td>
+
+                <td>
+                  {e.nombres} {e.apellidos}
+                </td>
+
+                <td>{e.cursoActual ?? "—"}</td>
+
+                <td>{e.Nivel ?? "—"}</td>
+
+                <td>{e.telefono ?? "—"}</td>
+
+                <td>{e.correo ?? "—"}</td>
+
+                <td>
+                  {e.activo ? "Activo" : "Inactivo"}
+                </td>
+
+                <td>
+                  <button
+                    onClick={() =>
+                      cambiarEstado(e.idEstudiante)
+                    }
+                  >
+                    {e.activo
+                      ? "Desactivar"
+                      : "Activar"}
+                  </button>
+                </td>
+              </tr>
+            ))
+          )}
         </tbody>
       </table>
     </div>

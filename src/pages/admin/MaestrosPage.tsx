@@ -3,6 +3,8 @@ import api from "../../api/axiosConfig";
 
 interface Maestro {
   idMaestro: number;
+  centroId: number | null;
+  centro: string | null;
   codigoEmpleado: string | null;
   nombres: string;
   apellidos: string;
@@ -18,110 +20,173 @@ interface Maestro {
 
 const MaestrosPage = () => {
   const [maestros, setMaestros] = useState<Maestro[]>([]);
-
-  const [codigoEmpleado, setCodigoEmpleado] = useState("");
-  const [nombres, setNombres] = useState("");
-  const [apellidos, setApellidos] = useState("");
-  const [cedula, setCedula] = useState("");
-  const [telefono, setTelefono] = useState("");
-  const [correo, setCorreo] = useState("");
-  const [direccion, setDireccion] = useState("");
-  const [especialidad, setEspecialidad] = useState("");
-  const [fechaIngreso, setFechaIngreso] = useState("");
-
-  const [editandoId, setEditandoId] = useState<number | null>(null);
+  const [archivo, setArchivo] = useState<File | null>(null);
+  const [resultado, setResultado] = useState<any>(null);
+  const [importando, setImportando] = useState(false);
 
   const cargarMaestros = async () => {
-    const res = await api.get("/Maestros");
-    setMaestros(res.data);
+    try {
+      const res = await api.get("/Maestros");
+      setMaestros(res.data);
+    } catch (error) {
+      console.error(error);
+      alert("No se pudieron cargar los maestros.");
+    }
   };
 
   useEffect(() => {
     cargarMaestros();
   }, []);
 
-  const limpiar = () => {
-    setCodigoEmpleado("");
-    setNombres("");
-    setApellidos("");
-    setCedula("");
-    setTelefono("");
-    setCorreo("");
-    setDireccion("");
-    setEspecialidad("");
-    setFechaIngreso("");
-    setEditandoId(null);
-  };
-
-  const guardar = async (e: React.FormEvent) => {
+  const importarExcel = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    const payload = {
-      codigoEmpleado,
-      nombres,
-      apellidos,
-      cedula,
-      telefono,
-      correo,
-      direccion,
-      especialidad,
-      fechaIngreso: fechaIngreso || null,
-    };
-
-    if (editandoId) {
-      await api.put(`/Maestros/${editandoId}`, payload);
-    } else {
-      const res = await api.post("/Maestros", payload);
-      alert(
-        `Maestro creado.\nUsuario: ${res.data.usuario}\nContraseña temporal: ${res.data.passwordTemporal}`
-      );
+    if (!archivo) {
+      alert("Selecciona un archivo Excel.");
+      return;
     }
 
-    limpiar();
-    cargarMaestros();
-  };
+    const formData = new FormData();
+    formData.append("archivo", archivo);
 
-  const editar = (m: Maestro) => {
-    setEditandoId(m.idMaestro);
-    setCodigoEmpleado(m.codigoEmpleado ?? "");
-    setNombres(m.nombres);
-    setApellidos(m.apellidos);
-    setCedula(m.cedula ?? "");
-    setTelefono(m.telefono ?? "");
-    setCorreo(m.correo ?? "");
-    setDireccion(m.direccion ?? "");
-    setEspecialidad(m.especialidad ?? "");
-    setFechaIngreso(m.fechaIngreso?.substring(0, 10) ?? "");
+    setImportando(true);
+    setResultado(null);
+
+    try {
+      const res = await api.post(
+        "/ImportacionExcel/maestros",
+        formData,
+        {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      );
+
+      setResultado(res.data);
+      setArchivo(null);
+
+      await cargarMaestros();
+
+    } catch (error: any) {
+      console.error("Error importando maestros:", error);
+
+      setResultado({
+        total: 0,
+        exitosos: 0,
+        fallidos: 1,
+        errores: [
+          {
+            fila: "-",
+            error:
+              error.response?.data ??
+              "No se pudo importar el archivo.",
+          },
+        ],
+      });
+
+    } finally {
+      setImportando(false);
+    }
   };
 
   const cambiarEstado = async (id: number) => {
-    await api.put(`/Maestros/${id}/estado`);
-    cargarMaestros();
+    try {
+      await api.put(`/Maestros/${id}/estado`);
+      await cargarMaestros();
+    } catch (error: any) {
+      alert(
+        error.response?.data ??
+          "No se pudo cambiar el estado del maestro."
+      );
+    }
   };
 
   return (
     <div>
       <h1>Maestros</h1>
 
-      <form onSubmit={guardar} className="form-card form-grid">
-        <input placeholder="Código" value={codigoEmpleado} onChange={(e) => setCodigoEmpleado(e.target.value)} />
-        <input placeholder="Nombres" value={nombres} onChange={(e) => setNombres(e.target.value)} required />
-        <input placeholder="Apellidos" value={apellidos} onChange={(e) => setApellidos(e.target.value)} required />
-        <input placeholder="Cédula" value={cedula} onChange={(e) => setCedula(e.target.value)} />
-        <input placeholder="Teléfono" value={telefono} onChange={(e) => setTelefono(e.target.value)} />
-        <input placeholder="Correo" value={correo} onChange={(e) => setCorreo(e.target.value)} />
-        <input placeholder="Dirección" value={direccion} onChange={(e) => setDireccion(e.target.value)} />
-        <input placeholder="Especialidad" value={especialidad} onChange={(e) => setEspecialidad(e.target.value)} />
-        <input type="date" value={fechaIngreso} onChange={(e) => setFechaIngreso(e.target.value)} />
+      {/* =========================
+          IMPORTAR EXCEL
+      ========================= */}
 
-        <button type="submit">{editandoId ? "Actualizar" : "Crear"}</button>
+      <form
+        onSubmit={importarExcel}
+        className="form-card"
+        style={{ marginBottom: 20 }}
+      >
+        <h3>Importar maestros</h3>
 
-        {editandoId && (
-          <button type="button" onClick={limpiar}>
-            Cancelar
-          </button>
-        )}
+        <p>
+          Selecciona un archivo Excel con los maestros.
+        </p>
+
+        <input
+          type="file"
+          accept=".xlsx,.xls"
+          onChange={(e) =>
+            setArchivo(
+              e.target.files?.[0] ?? null
+            )
+          }
+          required
+        />
+
+        <button
+          type="submit"
+          disabled={importando}
+        >
+          {importando
+            ? "Importando..."
+            : "Importar maestros"}
+        </button>
       </form>
+
+      {/* =========================
+          RESULTADO IMPORTACIÓN
+      ========================= */}
+
+      {resultado && (
+        <div
+          className="card"
+          style={{ marginBottom: 20 }}
+        >
+          <h3>Resultado de importación</h3>
+
+          <p>
+            Total: {resultado.total}
+          </p>
+
+          <p>
+            Exitosos: {resultado.exitosos}
+          </p>
+
+          <p>
+            Fallidos: {resultado.fallidos}
+          </p>
+
+          {resultado.errores?.length > 0 && (
+            <>
+              <h4>Errores</h4>
+
+              <ul>
+                {resultado.errores.map(
+                  (err: any, index: number) => (
+                    <li key={index}>
+                      Fila {err.fila}:{" "}
+                      {err.error}
+                    </li>
+                  )
+                )}
+              </ul>
+            </>
+          )}
+        </div>
+      )}
+
+      {/* =========================
+          TABLA
+      ========================= */}
 
       <table className="data-table">
         <thead>
@@ -129,6 +194,7 @@ const MaestrosPage = () => {
             <th>ID</th>
             <th>Usuario</th>
             <th>Maestro</th>
+            <th>Centro</th>
             <th>Teléfono</th>
             <th>Correo</th>
             <th>Especialidad</th>
@@ -140,17 +206,51 @@ const MaestrosPage = () => {
         <tbody>
           {maestros.map((m) => (
             <tr key={m.idMaestro}>
-              <td>{m.idMaestro}</td>
-              <td>{m.usuario}</td>
-              <td>{m.nombres} {m.apellidos}</td>
-              <td>{m.telefono}</td>
-              <td>{m.correo}</td>
-              <td>{m.especialidad}</td>
-              <td>{m.activo ? "Activo" : "Inactivo"}</td>
               <td>
-                <button onClick={() => editar(m)}>Editar</button>
-                <button onClick={() => cambiarEstado(m.idMaestro)}>
-                  {m.activo ? "Desactivar" : "Activar"}
+                {m.idMaestro}
+              </td>
+
+              <td>
+                {m.usuario}
+              </td>
+
+              <td>
+                {m.nombres} {m.apellidos}
+              </td>
+
+              <td>
+                {m.centro ?? "Sin centro"}
+              </td>
+
+              <td>
+                {m.telefono}
+              </td>
+
+              <td>
+                {m.correo}
+              </td>
+
+              <td>
+                {m.especialidad}
+              </td>
+
+              <td>
+                {m.activo
+                  ? "Activo"
+                  : "Inactivo"}
+              </td>
+
+              <td>
+                <button
+                  onClick={() =>
+                    cambiarEstado(
+                      m.idMaestro
+                    )
+                  }
+                >
+                  {m.activo
+                    ? "Desactivar"
+                    : "Activar"}
                 </button>
               </td>
             </tr>

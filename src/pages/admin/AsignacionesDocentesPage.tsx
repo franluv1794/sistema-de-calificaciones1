@@ -56,11 +56,18 @@ const AsignacionesDocentesPage = () => {
   const [idCurso, setIdCurso] = useState("");
   const [idMateria, setIdMateria] = useState("");
   const [idAnioEscolar, setIdAnioEscolar] = useState("");
+
   const [editandoId, setEditandoId] = useState<number | null>(null);
 
   const cargarDatos = async () => {
-    const [resAsignaciones, resMaestros, resCursos, resMaterias, resAnios] =
-      await Promise.all([
+    try {
+      const [
+        resAsignaciones,
+        resMaestros,
+        resCursos,
+        resMaterias,
+        resAnios,
+      ] = await Promise.all([
         api.get("/AsignacionesDocentes"),
         api.get("/Maestros"),
         api.get("/Cursos"),
@@ -68,11 +75,19 @@ const AsignacionesDocentesPage = () => {
         api.get("/AniosEscolares"),
       ]);
 
-    setAsignaciones(resAsignaciones.data);
-    setMaestros(resMaestros.data);
-    setCursos(resCursos.data);
-    setMaterias(resMaterias.data);
-    setAnios(resAnios.data);
+      setAsignaciones(resAsignaciones.data);
+      setMaestros(resMaestros.data);
+      setCursos(resCursos.data);
+      setMaterias(resMaterias.data);
+      setAnios(resAnios.data);
+    } catch (error: any) {
+      console.error("ERROR CARGANDO ASIGNACIONES:", error);
+
+      toast.error(
+        error.response?.data ||
+          "No se pudieron cargar los datos."
+      );
+    }
   };
 
   useEffect(() => {
@@ -97,18 +112,50 @@ const AsignacionesDocentesPage = () => {
       idAnioEscolar: Number(idAnioEscolar),
     };
 
+    console.log("ASIGNACIÓN QUE SE ENVÍA:", payload);
+
     try {
       if (editandoId) {
-        await api.put(`/AsignacionesDocentes/${editandoId}`, payload);
+        await api.put(
+          `/AsignacionesDocentes/${editandoId}`,
+          payload
+        );
+
+        toast.success(
+          "Asignación actualizada exitosamente."
+        );
       } else {
-        await api.post("/AsignacionesDocentes", payload);
-        toast.success("Asignación creada exitosamente.");
+        await api.post(
+          "/AsignacionesDocentes",
+          payload
+        );
+
+        toast.success(
+          "Asignación creada exitosamente."
+        );
       }
 
       limpiar();
-      cargarDatos();
+      await cargarDatos();
+
     } catch (error: any) {
-      toast.error(error.response?.data ?? "Error al guardar la asignación.");
+      console.error(
+        "ERROR AL CREAR ASIGNACIÓN:",
+        error
+      );
+
+      console.error(
+        "RESPUESTA DEL BACKEND:",
+        error.response?.data
+      );
+
+      const mensaje =
+        typeof error.response?.data === "string"
+          ? error.response.data
+          : error.response?.data?.mensaje ||
+            "No se pudo guardar la asignación.";
+
+      toast.error(mensaje);
     }
   };
 
@@ -121,63 +168,140 @@ const AsignacionesDocentesPage = () => {
   };
 
   const cambiarEstado = async (id: number) => {
-    await api.put(`/AsignacionesDocentes/${id}/estado`);
-    cargarDatos();
+    try {
+      await api.put(
+        `/AsignacionesDocentes/${id}/estado`
+      );
+
+      toast.success(
+        "Estado actualizado correctamente."
+      );
+
+      await cargarDatos();
+    } catch (error: any) {
+      toast.error(
+        error.response?.data ||
+          "No se pudo cambiar el estado."
+      );
+    }
   };
 
   return (
     <div>
       <h1>Asignaciones Docentes</h1>
 
-      <form onSubmit={guardar} className="form-card">
-        <select value={idMaestro} onChange={(e) => setIdMaestro(e.target.value)} required>
-          <option value="">Seleccione maestro</option>
+      <form
+        onSubmit={guardar}
+        className="form-card"
+      >
+        {/* MAESTRO */}
+        <select
+          value={idMaestro}
+          onChange={(e) =>
+            setIdMaestro(e.target.value)
+          }
+          required
+        >
+          <option value="">
+            Seleccione maestro
+          </option>
+
           {maestros
             .filter((m) => m.activo)
             .map((m) => (
-              <option key={m.idMaestro} value={m.idMaestro}>
+              <option
+                key={m.idMaestro}
+                value={m.idMaestro}
+              >
                 {m.nombres} {m.apellidos}
               </option>
             ))}
         </select>
 
-        <select value={idCurso} onChange={(e) => setIdCurso(e.target.value)} required>
-          <option value="">Seleccione curso</option>
+        {/* CURSO */}
+        <select
+          value={idCurso}
+          onChange={(e) =>
+            setIdCurso(e.target.value)
+          }
+          required
+        >
+          <option value="">
+            Seleccione curso
+          </option>
+
           {cursos
             .filter((c) => c.activo)
             .map((c) => (
-              <option key={c.idCurso} value={c.idCurso}>
+              <option
+                key={c.idCurso}
+                value={c.idCurso}
+              >
                 {c.nivel} - {c.grado} - {c.nombre}
               </option>
             ))}
         </select>
 
-        <select value={idMateria} onChange={(e) => setIdMateria(e.target.value)} required>
-          <option value="">Seleccione materia</option>
+        {/* MATERIA */}
+        <select
+          value={idMateria}
+          onChange={(e) =>
+            setIdMateria(e.target.value)
+          }
+          required
+        >
+          <option value="">
+            Seleccione materia
+          </option>
+
           {materias
             .filter((m) => m.activa)
             .map((m) => (
-              <option key={m.idMateria} value={m.idMateria}>
+              <option
+                key={m.idMateria}
+                value={m.idMateria}
+              >
                 {m.nombre}
               </option>
             ))}
         </select>
 
-        <select value={idAnioEscolar} onChange={(e) => setIdAnioEscolar(e.target.value)} required>
-          <option value="">Seleccione año</option>
+        {/* AÑO ESCOLAR */}
+        <select
+          value={idAnioEscolar}
+          onChange={(e) =>
+            setIdAnioEscolar(e.target.value)
+          }
+          required
+        >
+          <option value="">
+            Seleccione año
+          </option>
+
           {anios
             .filter((a) => !a.cerrado)
             .map((a) => (
-              <option key={a.idAnioEscolar} value={a.idAnioEscolar}>
-                {a.nombre} {a.activo ? "(Activo)" : ""}
+              <option
+                key={a.idAnioEscolar}
+                value={a.idAnioEscolar}
+              >
+                {a.nombre}
+                {a.activo ? " (Activo)" : ""}
               </option>
             ))}
         </select>
 
-        <button type="submit">{editandoId ? "Actualizar" : "Asignar"}</button>
+        <button type="submit">
+          {editandoId
+            ? "Actualizar"
+            : "Asignar"}
+        </button>
 
         {editandoId && (
-          <button type="button" onClick={limpiar}>
+          <button
+            type="button"
+            onClick={limpiar}
+          >
             Cancelar
           </button>
         )}
@@ -199,18 +323,46 @@ const AsignacionesDocentesPage = () => {
 
         <tbody>
           {asignaciones.map((a) => (
-            <tr key={a.idAsignacionDocente}>
-              <td>{a.idAsignacionDocente}</td>
-              <td>{a.maestro}</td>
-              <td>{a.curso}</td>
-              <td>{a.grado}</td>
-              <td>{a.materia}</td>
-              <td>{a.anioEscolar}</td>
-              <td>{a.activo ? "Activa" : "Inactiva"}</td>
+            <tr
+              key={a.idAsignacionDocente}
+            >
               <td>
-                <button onClick={() => editar(a)}>Editar</button>
-                <button onClick={() => cambiarEstado(a.idAsignacionDocente)}>
-                  {a.activo ? "Desactivar" : "Activar"}
+                {a.idAsignacionDocente}
+              </td>
+
+              <td>{a.maestro}</td>
+
+              <td>{a.curso}</td>
+
+              <td>{a.grado}</td>
+
+              <td>{a.materia}</td>
+
+              <td>{a.anioEscolar}</td>
+
+              <td>
+                {a.activo
+                  ? "Activa"
+                  : "Inactiva"}
+              </td>
+
+              <td>
+                <button
+                  onClick={() => editar(a)}
+                >
+                  Editar
+                </button>
+
+                <button
+                  onClick={() =>
+                    cambiarEstado(
+                      a.idAsignacionDocente
+                    )
+                  }
+                >
+                  {a.activo
+                    ? "Desactivar"
+                    : "Activar"}
                 </button>
               </td>
             </tr>

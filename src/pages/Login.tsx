@@ -3,6 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import "../Styles/Login.css";
 import logoMireducacion from "../imagenes/Gemini_Generated_Image_vm4u0uvm4u0uvm4u.png";
+import Mirfoto from "../imagenes/mir imagenes.png";
 
 const Login = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");
@@ -13,90 +14,212 @@ const Login = () => {
   const navigate = useNavigate();
 
   const handleSubmit = async (e: React.FormEvent) => {
-  e.preventDefault();
-  setError("");
+    e.preventDefault();
+    setError("");
 
- try {
-  await login(nombreUsuario, password);
+    try {
+      await login(nombreUsuario, password);
 
-  const user = JSON.parse(localStorage.getItem("user") || "{}");
+      const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-  console.log("USUARIO LOGIN:", user);
-  console.log("ROL:", user.rol);
-  console.log("ROLE:", user.role);
-  console.log("NOMBRE:", user.nombre);
+      console.log("USUARIO LOGIN:", user);
+      console.log("ROL:", user.rol);
+      console.log("ROLE:", user.role);
+      console.log("NOMBRE:", user.nombre);
 
-  const rol = user.rol ?? user.role ?? user.nombre;
+      const rol = user.rol ?? user.role ?? user.nombre;
 
-  if (
-    rol === "Administrador" ||
-    rol === "CoordinadorPrimaria" ||
-    rol === "CoordinadorSecundaria" ||
-    rol === "CoordinadorPolitecnico"
-  ) {
-    navigate("/admin/dashboard");
-  } else if (rol === "Maestro") {
-    navigate("/maestro/dashboard");
-  } else if (rol === "Estudiante") {
-    navigate("/estudiante/dashboard");
-  } else if (rol === "Padre") {
-    navigate("/padre/dashboard");
-  } else {
-    console.log("ROL NO RECONOCIDO:", rol);
-    navigate("/");
-  }
-} catch {
-  setError("Usuario o contraseña incorrectos.");
-}};
+      if (
+        rol === "Administrador" ||
+        rol === "CoordinadorPrimaria" ||
+        rol === "CoordinadorSecundaria" ||
+        rol === "CoordinadorPolitecnico"
+      ) {
+        navigate("/admin/dashboard");
+      } else if (rol === "Maestro") {
+        navigate("/maestro/dashboard");
+      } else if (rol === "Estudiante") {
+        navigate("/estudiante/dashboard");
+      } else if (rol === "Padre") {
+        navigate("/padre/dashboard");
+      } else {
+        console.log("ROL NO RECONOCIDO:", rol);
+        navigate("/");
+      }
+    } catch {
+      setError("Usuario o contraseña incorrectos.");
+    }
+  };
 
- return (
+  return (
     <div className="login-page">
-      {/* Franja azul superior */}
-      <div className="top-bar"></div>
 
-      <div className="login-container">
-        {/* Logo de MIR */}
-        <div className="logo-wrapper">
-          <img 
-              src={logoMireducacion}
-            alt="MIR Calificaciones" 
-            className="login-logo" 
-          />
+      <div className="login-card">
+
+   
+        <div className="login-panel">
+
+       <div className="login-brand">
+
+  <img
+    src={logoMireducacion}
+    alt="MIR Calificaciones"
+    className="login-logo"
+  />
+
+  <span className="brand-title">
+    MIR
+  </span>
+
+  <span className="brand-subtitle">
+    CALIFICACIONES
+  </span>
+
+</div>
+
+          <div className="login-content">
+
+            {/* Icono usuario */}
+            <div className="user-icon">
+              <svg
+                viewBox="0 0 24 24"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <circle cx="12" cy="8" r="3.5" />
+                <path d="M5 20C5.8 16.7 8.2 15 12 15C15.8 15 18.2 16.7 19 20" />
+              </svg>
+            </div>
+
+            <form onSubmit={handleSubmit} className="login-form">
+
+              {/* Usuario */}
+              <div className="input-group">
+                <span className="input-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <circle cx="12" cy="8" r="3" />
+                    <path d="M5 20C5.7 16.8 8 15 12 15C16 15 18.3 16.8 19 20" />
+                  </svg>
+                </span>
+
+                <input
+                  type="text"
+                  placeholder="USUARIO"
+                  value={nombreUsuario}
+                  onChange={(e) => setNombreUsuario(e.target.value)}
+                />
+              </div>
+
+              {/* Contraseña */}
+              <div className="input-group">
+                <span className="input-icon">
+                  <svg
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    xmlns="http://www.w3.org/2000/svg"
+                  >
+                    <rect x="5" y="10" width="14" height="10" rx="2" />
+                    <path d="M8 10V7C8 4.8 9.8 3 12 3C14.2 3 16 4.8 16 7V10" />
+                  </svg>
+                </span>
+
+                <input
+                  type="password"
+                  placeholder="CONTRASEÑA"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              {error && (
+                <p className="error-message">
+                  {error}
+                </p>
+              )}
+
+              <button type="submit" className="login-button">
+                INICIAR SESIÓN
+              </button>
+
+              <div className="login-options">
+                <label>
+                  <input type="checkbox" />
+                  <span>Recordarme</span>
+                </label>
+
+                <a href="#lost">
+                  ¿Olvidaste tu contraseña?
+                </a>
+              </div>
+
+            </form>
+          </div>
+
+          <div className="login-dots">
+            <span></span>
+            <span></span>
+            <span></span>
+          </div>
+
         </div>
 
-        <form onSubmit={handleSubmit} className="login-form">
-          <input
-            type="text"
-            placeholder="Username"
-            value={nombreUsuario}
-            onChange={(e) => setNombreUsuario(e.target.value)}
-            className="login-input"
-          />
 
-          <input
-            type="password"
-            placeholder="Password"
-            value={password}
-            onChange={(e) => setPassword(e.target.value)}
-            className="login-input"
-          />
+        {/* =========================
+            PANEL DERECHO
+        ========================== */}
+        <div className="welcome-panel">
+          <img
+    src={Mirfoto}
+    alt="MIR"
+    className="welcome-background"
+  />
 
-          {error && <p className="error-message">{error}</p>}
 
-          {/* Botón de inicio de sesión agregado */}
-          <button type="submit" className="login-button">
-            Iniciar Sesión
-          </button>
-        </form>
+          <div className="welcome-overlay"></div>
 
-        {/* Enlace inferior */}
-        <div className="lost-password-wrapper">
-          <a href="#lost" className="lost-password-link">Lost password?</a>
+          <div className="welcome-content">
+
+            <div className="welcome-top">
+              <span>MIR CALIFICACIONES</span>
+
+              <div className="welcome-links">
+                <span>INICIO</span>
+                <span>SOPORTE</span>
+              </div>
+            </div>
+
+            <div className="welcome-center">
+              <h1>
+                Bienvenido.
+              </h1>
+
+              <p>
+                Gestiona tus calificaciones,
+                actividades y resultados académicos
+                desde un solo lugar.
+              </p>
+
+              <span className="welcome-small">
+                Una plataforma diseñada para facilitar
+                la gestión educativa.
+              </span>
+            </div>
+
+            <div className="welcome-bottom">
+              <span>PLATAFORMA EDUCATIVA</span>
+              <span>2026</span>
+            </div>
+
+          </div>
+
         </div>
+
       </div>
 
-      {/* Franja azul inferior */}
-      <div className="bottom-bar"></div>
     </div>
   );
 };

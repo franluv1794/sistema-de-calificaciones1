@@ -6,7 +6,7 @@ import DashboardEstudiante from "../pages/estudiante/DashboardEstudiante";
 import DashboardPadre from "../pages/padre/DashboardPadre";
 import AdminLayout from "../layouts/AdminLayout";
 import { useAuth } from "../auth/AuthContext";
-import CentrosPage from "../pages/admin/CentrosPage";
+
 import NivelesPage from "../pages/admin/NivelesPage";
 import GradosPage from "../pages/admin/GradosPage";
 import CursosPage from "../pages/admin/CursosPage";
@@ -22,6 +22,7 @@ import ReportesPage from "../pages/admin/ReportesPage";
 import AsignacionMaestroPage from "../pages/maestro/AsignacionMaestroPage";
 import CambiarPasswordPage from "../pages/CambiarPassword";
 import MateriasMaestroPage from "../pages/maestro/MateriasMaestroPage";
+import CoordinadoresAdmin from "../pages/admin/CoordinadoresAdmin";
 
 // Ruta de inicio (dashboard) según el rol del usuario autenticado.
 const homePorRol = (rol?: string) => {
@@ -91,7 +92,7 @@ const AppRoutes = () => {
         }
       >
         <Route path="dashboard" element={<DashboardAdmin />} />
-        <Route path="centros" element={<CentrosPage />} />
+        
         <Route path="niveles" element={<NivelesPage />} />
         <Route path="grados" element={<GradosPage />} />
         <Route path="cursos" element={<CursosPage />} />
@@ -104,6 +105,10 @@ const AppRoutes = () => {
         <Route path="periodos-publicacion" element={<PeriodosPublicacionPage />} />
         <Route path="padres" element={<PadresPage />} />
         <Route path="reportes" element={<ReportesPage />} />
+        <Route
+  path="/admin/coordinadores"
+  element={<CoordinadoresAdmin />}
+/>
       </Route>
 
       <Route
@@ -131,7 +136,16 @@ const AppRoutes = () => {
             <MateriasMaestroPage />
           </ProtectedRoute>
         }
+
+        
       />
+
+ 
+
+     
+
+        
+   
 
       <Route
         path="/estudiante/dashboard"
