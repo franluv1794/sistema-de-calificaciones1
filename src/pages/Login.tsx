@@ -53,33 +53,20 @@ const Login = () => {
 
   return (
     <div className="login-page">
-
       <div className="login-card">
-
-   
         <div className="login-panel">
+          <div className="login-brand">
+            <img
+              src={logoMireducacion}
+              alt="MIR Calificaciones"
+              className="login-logo"
+            />
 
-       <div className="login-brand">
-
-  <img
-    src={logoMireducacion}
-    alt="MIR Calificaciones"
-    className="login-logo"
-  />
-
-  <span className="brand-title">
-    MIR
-  </span>
-
-  <span className="brand-subtitle">
-    CALIFICACIONES
-  </span>
-
-</div>
+            <span className="brand-title">MIR</span>
+            <span className="brand-subtitle">CALIFICACIONES</span>
+          </div>
 
           <div className="login-content">
-
-            {/* Icono usuario */}
             <div className="user-icon">
               <svg
                 viewBox="0 0 24 24"
@@ -92,8 +79,6 @@ const Login = () => {
             </div>
 
             <form onSubmit={handleSubmit} className="login-form">
-
-              {/* Usuario */}
               <div className="input-group">
                 <span className="input-icon">
                   <svg
@@ -114,7 +99,6 @@ const Login = () => {
                 />
               </div>
 
-              {/* Contraseña */}
               <div className="input-group">
                 <span className="input-icon">
                   <svg
@@ -135,11 +119,7 @@ const Login = () => {
                 />
               </div>
 
-              {error && (
-                <p className="error-message">
-                  {error}
-                </p>
-              )}
+              {error && <p className="error-message">{error}</p>}
 
               <button type="submit" className="login-button">
                 INICIAR SESIÓN
@@ -151,11 +131,8 @@ const Login = () => {
                   <span>Recordarme</span>
                 </label>
 
-                <a href="#lost">
-                  ¿Olvidaste tu contraseña?
-                </a>
+                <a href="#lost">¿Olvidaste tu contraseña?</a>
               </div>
-
             </form>
           </div>
 
@@ -164,25 +141,13 @@ const Login = () => {
             <span></span>
             <span></span>
           </div>
-
         </div>
 
-
-        {/* =========================
-            PANEL DERECHO
-        ========================== */}
         <div className="welcome-panel">
-          <img
-    src={Mirfoto}
-    alt="MIR"
-    className="welcome-background"
-  />
-
-
+          <img src={Mirfoto} alt="MIR" className="welcome-background" />
           <div className="welcome-overlay"></div>
 
           <div className="welcome-content">
-
             <div className="welcome-top">
               <span>MIR CALIFICACIONES</span>
 
@@ -193,19 +158,15 @@ const Login = () => {
             </div>
 
             <div className="welcome-center">
-              <h1>
-                Bienvenido.
-              </h1>
+              <h1>Bienvenido.</h1>
 
               <p>
-                Gestiona tus calificaciones,
-                actividades y resultados académicos
+                Gestiona tus calificaciones, actividades y resultados académicos
                 desde un solo lugar.
               </p>
 
               <span className="welcome-small">
-                Una plataforma diseñada para facilitar
-                la gestión educativa.
+                Una plataforma diseñada para facilitar la gestión educativa.
               </span>
             </div>
 
@@ -213,13 +174,21 @@ const Login = () => {
               <span>PLATAFORMA EDUCATIVA</span>
               <span>2026</span>
             </div>
-
           </div>
-
         </div>
-
       </div>
 
+      <div className="proyecto-banner">
+        <div className="proyecto-banner-text">
+          <span>
+            Desarrollado, editado y administrado por
+            <b> Francis Luz Solano</b>
+            {" "}para Fundación MIR
+          </span>
+
+          <small>© 2026 · Todos los derechos reservados</small>
+        </div>
+      </div>
     </div>
   );
 };

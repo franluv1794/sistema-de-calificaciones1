@@ -3,6 +3,7 @@ import logoImage from "../../../imagenes/Captura de pantalla 2026-06-10 122000.p
 
 interface Props {
   reportes: any[];
+    centro: string;
 }
 
 const materiasBase = [
@@ -19,7 +20,7 @@ const materiasBase = [
 const normalizar = (texto: string) =>
   texto?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-const ReporteSecundariaAnual3ro = ({ reportes }: Props) => {
+const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
   if (!reportes || reportes.length === 0) return null;
 
   return (

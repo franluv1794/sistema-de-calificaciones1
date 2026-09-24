@@ -10,6 +10,7 @@
   display: flex;
   align-items: center;
   justify-content: center;
+  flex-direction: column;
 
   padding: 35px;
   box-sizing: border-box;
@@ -62,11 +63,7 @@
 
 
 /* =========================================
-   LOGO / BRAND
-========================================= */
-
-/* =========================================
-   BRAND IZQUIERDO
+   BRAND
 ========================================= */
 
 .login-brand {
@@ -84,8 +81,6 @@
   margin-bottom: 12px;
 }
 
-
-/* Imagen principal */
 .login-logo {
   width: 105px;
   height: 105px;
@@ -95,8 +90,6 @@
   margin-bottom: 2px;
 }
 
-
-/* MIR */
 .brand-title {
   display: block;
 
@@ -112,8 +105,6 @@
   margin-left: 8px;
 }
 
-
-/* CALIFICACIONES */
 .brand-subtitle {
   display: block;
 
@@ -126,6 +117,7 @@
 
   margin-top: 8px;
 }
+
 
 /* =========================================
    CONTENIDO LOGIN
@@ -227,7 +219,6 @@
   outline: none;
 
   width: 100%;
-
   height: 100%;
 
   background: transparent;
@@ -265,7 +256,7 @@
 
 
 /* =========================================
-   BOTÓN
+   BOTÓN LOGIN
 ========================================= */
 
 .login-button {
@@ -391,16 +382,6 @@
 
   background: #102d61;
 }
-/* =========================================
-   PANEL DERECHO
-========================================= */
-
-.welcome-panel {
-  position: relative;
-  overflow: hidden;
-
-  background: #102d61;
-}
 
 
 /* =========================================
@@ -419,7 +400,6 @@
 
   z-index: 0;
 
-  /* La imagen queda ligeramente oscura */
   filter: brightness(0.55);
 
   transform: scale(1.02);
@@ -427,7 +407,7 @@
 
 
 /* =========================================
-   CAPA OSCURA SOBRE LA IMAGEN
+   CAPA SOBRE IMAGEN
 ========================================= */
 
 .welcome-overlay {
@@ -449,7 +429,7 @@
 
 
 /* =========================================
-   CONTENIDO
+   CONTENIDO DERECHO
 ========================================= */
 
 .welcome-content {
@@ -468,6 +448,7 @@
   display: flex;
   flex-direction: column;
 }
+
 
 /* =========================================
    FORMAS DECORATIVAS
@@ -527,29 +508,6 @@
 
   opacity: 0.9;
 }
-
-
-/* =========================================
-   OVERLAY
-========================================= */
-
-.welcome-overlay {
-  position: absolute;
-
-  inset: 0;
-
-  background:
-    linear-gradient(
-      90deg,
-      rgba(12, 65, 111, 0.25),
-      transparent 50%
-    );
-
-  z-index: 1;
-}
-
-
-
 
 
 /* =========================================
@@ -626,7 +584,7 @@
 
 
 /* =========================================
-   PARTE INFERIOR
+   PARTE INFERIOR DERECHO
 ========================================= */
 
 .welcome-bottom {
@@ -641,58 +599,57 @@
   opacity: 0.7;
 }
 
-
 /* =========================================
-   RESPONSIVE
+   FIRMA DEL PROYECTO
 ========================================= */
 
-@media (max-width: 800px) {
+.proyecto-banner {
+  width: 100%;
 
-  .login-page {
-    padding: 20px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
 
-  .login-card {
-    max-width: 420px;
+  margin-top: 12px;
 
-    height: auto;
-
-    min-height: 620px;
-
-    grid-template-columns: 1fr;
-  }
-
-  .welcome-panel {
-    display: none;
-  }
-
-  .login-panel {
-    min-height: 620px;
-
-    padding: 30px;
-  }
-
-  .login-content {
-    max-width: 300px;
-  }
+  text-align: center;
 }
 
+.proyecto-banner-text {
+  padding: 8px 20px;
 
-@media (max-width: 450px) {
+  background: transparent;
 
-  .login-page {
-    padding: 12px;
-  }
+  box-shadow: none;
 
-  .login-card {
-    border-radius: 14px;
-  }
+  border-radius: 0;
 
-  .login-panel {
-    padding: 25px 22px;
-  }
+  min-width: 0;
+}
 
-  .welcome-center h1 {
-    font-size: 42px;
-  }
+.proyecto-banner-text span {
+  display: block;
+
+  color: rgba(255, 255, 255, 0.78);
+
+  font-size: 9px;
+  font-weight: 500;
+
+  line-height: 1.5;
+}
+
+.proyecto-banner-text b {
+  color: #72ddd6;
+
+  font-weight: 700;
+}
+
+.proyecto-banner-text small {
+  display: block;
+
+  margin-top: 2px;
+
+  color: rgba(255, 255, 255, 0.48);
+
+  font-size: 8px;
 }

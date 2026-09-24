@@ -5,6 +5,7 @@ import ReportePrimariaAnual4to from "./ReportePrimariaAnual4to";
 
 interface Props {
   reportes: any[];
+    centro: string;
 }
 
 const materiasBase = [
@@ -24,7 +25,7 @@ const normalizar = (texto: string) =>
 const valor = (obj: any, prop: string) =>
   obj?.[prop] ?? obj?.[prop.toUpperCase()] ?? "";
 
-const ReportePrimariaAnual6to = ({ reportes }: Props) => {
+const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
   if (!reportes || reportes.length === 0) return null;
 
   return (
@@ -55,7 +56,7 @@ const ReportePrimariaAnual6to = ({ reportes }: Props) => {
               </div>
 
               <div className="p6-titulo">
-                <h2>Politécnico María Auxiliadora</h2>
+                  <h2>{centro}</h2>
                 <h3>Año Escolar {r.anioEscolar ?? r.AnioEscolar ?? "2025-2026"}</h3>
                 <h3>CALIFICACIONES DE RENDIMIENTO</h3>
               </div>

@@ -4,6 +4,7 @@ import LogoMinerd from "../../../imagenes/download.png";
 
 interface Props {
   reportes: any[];
+    centro: string;
 }
 
 const materiasBase = [
@@ -20,7 +21,7 @@ const materiasBase = [
 const normalizar = (texto: string) =>
   texto?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
 
-const ReportePolitecnicoAnual5to = ({ reportes }: Props) => {
+const ReportePolitecnicoAnual5to = ({ reportes, centro}: Props) => {
   if (!reportes || reportes.length === 0) return null;
 
   return (
@@ -47,7 +48,7 @@ const ReportePolitecnicoAnual5to = ({ reportes }: Props) => {
               </div>
 
               <div className="pol5-titulo">
-                <h2>Politécnico María Auxiliadora</h2>
+                  <h2>{centro}</h2>
                 <h3>Año Escolar 2025-2026</h3>
                 <h3>CALIFICACIONES DE RENDIMIENTO</h3>
               </div>

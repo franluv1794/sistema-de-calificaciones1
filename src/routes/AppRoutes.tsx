@@ -23,6 +23,8 @@ import AsignacionMaestroPage from "../pages/maestro/AsignacionMaestroPage";
 import CambiarPasswordPage from "../pages/CambiarPassword";
 import MateriasMaestroPage from "../pages/maestro/MateriasMaestroPage";
 import CoordinadoresAdmin from "../pages/admin/CoordinadoresAdmin";
+import MaestroReportesPage from "../pages/maestro/MaestroReportesPage";
+import MaestroReporteDetallePage from "../pages/maestro/MaestroReporteDetallePage";
 
 // Ruta de inicio (dashboard) según el rol del usuario autenticado.
 const homePorRol = (rol?: string) => {
@@ -106,6 +108,9 @@ const AppRoutes = () => {
         <Route path="padres" element={<PadresPage />} />
         <Route path="reportes" element={<ReportesPage />} />
         <Route
+
+/>
+        <Route
   path="/admin/coordinadores"
   element={<CoordinadoresAdmin />}
 />
@@ -139,13 +144,19 @@ const AppRoutes = () => {
 
         
       />
-
+<Route
+  path="/maestro/reportes"
+  element={
+    <ProtectedRoute roles={["Maestro"]}>
+      <MaestroReportesPage />
+    </ProtectedRoute>
+  }
+/>
  
-
-     
-
-        
-   
+ <Route
+  path="/maestro/reportes/detalle/:idAsignacionDocente/:idCurso"
+  element={<MaestroReporteDetallePage />}
+/>
 
       <Route
         path="/estudiante/dashboard"

@@ -1,4 +1,165 @@
+
+
+.reporte-estudiante {
+  width: 100%;
+  max-width: 1000px;
+  margin: 0 auto 20px;
+  padding: 18px 20px;
+  box-sizing: border-box;
+
+  background: #ffffff;
+  border: 1px solid #d9dee7;
+  border-radius: 10px;
+
+  font-family: Arial, Helvetica, sans-serif;
+  color: #1f2937;
+}
+
+
+.reporte-header {
+  position: relative;
+  text-align: center;
+  margin-bottom: 12px;
+  line-height: 1.25;
+}
+
+.reporte-header strong {
+  display: block;
+  font-size: 15px;
+  margin-bottom: 5px;
+}
+
+.reporte-header p {
+  margin: 2px 0;
+  font-size: 11px;
+}
+
+.fecha-reporte {
+  margin-top: 6px;
+  font-size: 11px;
+  font-weight: bold;
+}
+
+/* ---------- INFORMACIÓN DEL ESTUDIANTE ---------- */
+
+.reporte-info {
+  display: grid;
+  grid-template-columns: 1fr 90px;
+  gap: 0;
+  margin-bottom: 10px;
+
+  border: 1px solid #bfc6d1;
+  border-radius: 4px;
+  overflow: hidden;
+
+  font-size: 11px;
+}
+
+.reporte-info > div {
+  padding: 7px 9px;
+  border-right: 1px solid #bfc6d1;
+}
+
+.reporte-info > div:last-child {
+  border-right: none;
+}
+
+/* ---------- TABLAS ---------- */
+
+.boletin-tabla {
+  width: 100%;
+  border-collapse: collapse;
+  table-layout: fixed;
+  margin-top: 8px;
+
+  font-size: 10px;
+}
+
+.boletin-tabla th,
+.boletin-tabla td {
+  border: 1px solid #7d8793;
+  padding: 5px 3px;
+
+  text-align: center;
+  vertical-align: middle;
+
+  line-height: 1.1;
+}
+
+.boletin-tabla th {
+  font-weight: 700;
+  background: #f1f4f7;
+}
+
+.boletin-tabla td:first-child,
+.boletin-tabla th:first-child {
+  text-align: left;
+  padding-left: 7px;
+}
+
+/* Primera tabla: asignaturas */
+.reporte-estudiante > .boletin-tabla:first-of-type th:first-child,
+.reporte-estudiante > .boletin-tabla:first-of-type td:first-child {
+  width: 125px;
+}
+
+/* ---------- MATERIAS TÉCNICAS ---------- */
+
+.reporte-estudiante h3 {
+  margin: 14px 0 7px !important;
+
+  font-size: 12px;
+  font-weight: 700;
+  letter-spacing: 0.3px;
+}
+
+/* La segunda tabla tiene 14 columnas */
+.reporte-estudiante > .boletin-tabla:nth-of-type(2) {
+  table-layout: fixed;
+}
+
+/* Materia técnica */
+.reporte-estudiante > .boletin-tabla:nth-of-type(2) th:first-child,
+.reporte-estudiante > .boletin-tabla:nth-of-type(2) td:first-child {
+  width: 105px;
+  text-align: left;
+  white-space: normal;
+  word-break: break-word;
+}
+
+/* RA1 - RA12 */
+.reporte-estudiante > .boletin-tabla:nth-of-type(2) th:not(:first-child),
+.reporte-estudiante > .boletin-tabla:nth-of-type(2) td:not(:first-child) {
+  width: 31px;
+  padding: 4px 1px;
+  font-size: 9px;
+  text-align: center;
+}
+
+/* Total */
+.reporte-estudiante > .boletin-tabla:nth-of-type(2) th:last-child,
+.reporte-estudiante > .boletin-tabla:nth-of-type(2) td:last-child {
+  width: 42px;
+  font-weight: bold;
+}
+
+/* ---------- TEXTO FINAL ---------- */
+
+.recorte-texto {
+  margin: 8px 0 0;
+  font-size: 8px;
+  color: #8a929d;
+  text-align: right;
+}
+
+
+/* =========================================================
+   IMPRESIÓN
+   3 REPORTES POR PÁGINA
+   ========================================================= */
+
 @media print {
+
   .no-print,
   .sidebar,
   .topbar,
@@ -28,7 +189,123 @@
     position: static !important;
   }
 
-  .reporte-estudiante,
+  /* ===============================
+     REPORTE DE PERÍODO
+     =============================== */
+
+  .reporte-estudiante {
+    width: 190mm !important;
+    height: 87mm !important;
+
+    margin: 0 auto !important;
+    padding: 5mm !important;
+
+    box-sizing: border-box !important;
+
+    border: 1px solid #999 !important;
+    border-radius: 3mm !important;
+
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+
+    overflow: hidden !important;
+
+    font-family: Arial, Helvetica, sans-serif !important;
+  }
+
+  /* Cada tercer reporte termina la página */
+  .reporte-estudiante:nth-child(3n) {
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .reporte-header {
+    margin-bottom: 2mm !important;
+  }
+
+  .reporte-header strong {
+    font-size: 10pt !important;
+    margin-bottom: 1mm !important;
+  }
+
+  .reporte-header p {
+    margin: 0.5mm 0 !important;
+    font-size: 7.5pt !important;
+  }
+
+  .fecha-reporte {
+    margin-top: 1mm !important;
+    font-size: 7.5pt !important;
+  }
+
+  .reporte-info {
+    grid-template-columns: 1fr 18mm !important;
+
+    margin-bottom: 2mm !important;
+
+    font-size: 7.5pt !important;
+  }
+
+  .reporte-info > div {
+    padding: 1.5mm 2mm !important;
+  }
+
+  /* Tablas */
+  .boletin-tabla {
+    margin-top: 1.5mm !important;
+    font-size: 6.8pt !important;
+  }
+
+  .boletin-tabla th,
+  .boletin-tabla td {
+    padding: 1.2mm 0.8mm !important;
+    line-height: 1 !important;
+  }
+
+  /* Primera tabla */
+  .reporte-estudiante > .boletin-tabla:first-of-type th:first-child,
+  .reporte-estudiante > .boletin-tabla:first-of-type td:first-child {
+    width: 34mm !important;
+  }
+
+  /* Título materias técnicas */
+  .reporte-estudiante h3 {
+    margin: 3mm 0 1.5mm !important;
+    font-size: 8pt !important;
+  }
+
+  /* Tabla técnica */
+  .reporte-estudiante > .boletin-tabla:nth-of-type(2)
+    th:first-child,
+  .reporte-estudiante > .boletin-tabla:nth-of-type(2)
+    td:first-child {
+    width: 27mm !important;
+    font-size: 6.5pt !important;
+  }
+
+  .reporte-estudiante > .boletin-tabla:nth-of-type(2)
+    th:not(:first-child),
+  .reporte-estudiante > .boletin-tabla:nth-of-type(2)
+    td:not(:first-child) {
+    width: 7.7mm !important;
+    padding: 1mm 0.2mm !important;
+    font-size: 6.3pt !important;
+  }
+
+  .reporte-estudiante > .boletin-tabla:nth-of-type(2)
+    th:last-child,
+  .reporte-estudiante > .boletin-tabla:nth-of-type(2)
+    td:last-child {
+    width: 11mm !important;
+  }
+
+  .recorte-texto {
+    margin: 1.5mm 0 0 !important;
+    font-size: 5.5pt !important;
+  }
+
+
+
   .reporte-pol-4to,
   .reporte-pol-5to,
   .reporte-pol-6to,
@@ -38,7 +315,6 @@
   .reporte-secundaria-1ro,
   .reporte-secundaria-2do,
   .reporte-secundaria-3ro {
-    display: block !important;
     page-break-after: always !important;
     break-after: page !important;
   }
@@ -46,5 +322,12 @@
   @page {
     size: A4 portrait;
     margin: 10mm;
+  }
+}
+
+@media print {
+  @page {
+    size: 11in 8.5in;
+    margin: 0;
   }
 }

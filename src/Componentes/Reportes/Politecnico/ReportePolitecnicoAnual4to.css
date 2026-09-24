@@ -1,11 +1,9 @@
-@page {
-  size: letter landscape;
-  margin: 6mm;
-}
-
 .reporte-pol-4to {
-  width: 100%;
-  padding: 8mm;
+  width: 279mm;
+  min-height: 200mm;
+  box-sizing: border-box;
+  padding: 6mm;
+  margin: 0 auto;
   background: white;
   color: black;
   page-break-after: always;
@@ -145,14 +143,8 @@
   padding: 4px;
   font-size: 14px;
 }
-
 .pol4-firmas {
-  display: grid;
-  grid-template-columns: 1fr 1fr;
-  gap: 260px;
-  margin: 20px 70px 12px 70px;
-  text-align: center;
-  font-size: 12px;
+  margin: 10px 70px 6px 70px;
 }
 
 .pol4-firmas span {
@@ -201,11 +193,73 @@
 }
 .pol4-leyenda p {
   margin: 4px 0 0 0;
+}@page {
+  size: 11in 8.5in;
+  margin: 0;
 }
 
 @media print {
+
+  html,
+  body {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  .reportes-politecnico-anual {
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
   .reporte-pol-4to {
-    padding: 6mm;
-    page-break-after: always;
+    width: 100% !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    box-sizing: border-box !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .reporte-pol-4to .pol4-header {
+    display: grid !important;
+    visibility: visible !important;
+    opacity: 1 !important;
+    position: relative !important;
+    height: auto !important;
+    max-height: none !important;
+    overflow: visible !important;
+  }
+
+  .reporte-pol-4to .pol4-header * {
+    visibility: visible !important;
+  }
+}
+@media print {
+
+  .pol4-firmas {
+    margin-top: 6px !important;
+    margin-bottom: 5px !important;
+  }
+
+  .pol4-observaciones {
+    height: 30px !important;
+    padding: 4px !important;
+    margin-bottom: 3px !important;
+  }
+
+  .pol4-situacion,
+  .pol4-leyenda {
+    padding: 4px !important;
+  }
+
+  .pol4-situacion p {
+    margin: 1px 0 0 25px !important;
+  }
+
+  .r7-creditos {
+    margin-top: 2px !important;
+    font-size: 8px !important;
   }
 }

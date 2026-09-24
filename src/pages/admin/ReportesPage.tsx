@@ -79,6 +79,10 @@ const ReportesPage = () => {
   const [reportesPolitecnicoAnual, setReportesPolitecnicoAnual] = useState<any[]>([]);
   const [gradoReportePolitecnico, setGradoReportePolitecnico] = useState("");
   const [gradoReportePrimaria, setGradoReportePrimaria] = useState("");
+  const [centroReportePolitecnico, setCentroReportePolitecnico] = useState("");
+  const [centroReportePrimaria, setCentroReportePrimaria] = useState("");
+const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
+ 
 
   useEffect(() => {
     const cargar = async () => {
@@ -129,11 +133,14 @@ const ReportesPage = () => {
     try {
       const res = await api.get(`/Reportes/primaria/anual/curso/${idCurso}`);
       const data = res.data;
+      setCentroReportePrimaria(data.centro ?? data.Centro ?? "");
       setReportesPrimariaAnual(data.reportes ?? data.Reportes ?? []);
       setGradoReportePrimaria(data.grado ?? data.Grado ?? "");
+      
       setReportesPrimaria([]);
       setReportesSecundaria([]);
       setGradoReporteSecundaria(data.grado ?? data.Grado ?? "");
+      
       setReportesSecundariaAnual([]);
       setResultado(null);
       setMostrarTablaPendientes(false);
@@ -171,6 +178,7 @@ const ReportesPage = () => {
       const res = await api.get(`/Reportes/secundaria/curso/${idCurso}/periodo/${idPeriodo}`);
       const data = res.data;
       setReportesSecundaria(data.reportes ?? data.Reportes ?? []);
+      setCentroReporteSecundaria(data.centro ?? data.Centro ?? "");
       setReportesPrimaria([]);
       setReportesSecundariaAnual([]);
       setResultado(null);
@@ -188,6 +196,7 @@ const ReportesPage = () => {
       const data = res.data;
       setReportesSecundariaAnual(data.reportes ?? data.Reportes ?? []);
       setGradoReporteSecundaria(data.grado ?? data.Grado ?? "");
+      setCentroReporteSecundaria(data.centro ?? data.Centro ?? "");
       setReportesPrimaria([]);
       setReportesSecundaria([]);
       setResultado(null);
@@ -204,6 +213,7 @@ const ReportesPage = () => {
       const res = await api.get(`/Reportes/politecnico/curso/${idCurso}/periodo/${idPeriodo}`);
       const data = res.data;
       setReportesPolitecnico(data.reportes ?? data.Reportes ?? []);
+      setCentroReportePolitecnico(data.centro ?? data.Centro ?? "");
       setReportesPrimaria([]);
       setReportesSecundaria([]);
       setReportesPrimariaAnual([]);
@@ -223,6 +233,7 @@ const ReportesPage = () => {
       const data = res.data;
       setReportesPolitecnicoAnual(data.reportes ?? data.Reportes ?? []);
       setGradoReportePolitecnico(data.grado ?? data.Grado ?? "");
+      setCentroReportePolitecnico(data.centro ?? data.Centro ?? "");
       setReportesPrimaria([]);
       setReportesSecundaria([]);
       setReportesPolitecnico([]);
@@ -553,7 +564,7 @@ const puedeVerPolitecnico =
               <div className="reporte-estudiante" key={r.idEstudiante ?? r.IdEstudiante ?? index}>
                 <div className="reporte-header">
                   <div>
-                    <strong>Fundación MIR María Auxiliadora</strong>
+                    <strong>{centroReportePrimaria}</strong>
                     <p>Año Escolar 2025-2026 | Distrito Educativo 05-03</p>
                     <p>Calificaciones de Rendimiento | Nivel Primario</p>
                   </div>
@@ -628,7 +639,7 @@ const puedeVerPolitecnico =
               <div className="reporte-estudiante" key={r.idEstudiante ?? r.IdEstudiante ?? index}>
                 <div className="reporte-header">
                   <div>
-                    <strong>Fundación MIR María Auxiliadora</strong>
+                    <strong>{centroReporteSecundaria}</strong>
                     <p>Año Escolar 2025-2026 | Distrito Educativo 05-03</p>
                     <p>Calificaciones de Rendimiento | Nivel Secundario</p>
                   </div>
@@ -736,7 +747,7 @@ const puedeVerPolitecnico =
               <div className="reporte-estudiante" key={r.idEstudiante ?? index}>
                 <div className="reporte-header">
                   <div>
-                    <strong>Fundación MIR María Auxiliadora</strong>
+                  <strong>{centroReportePolitecnico}</strong>
                     <p>Año Escolar 2025-2026 | Distrito Educativo 05-03</p>
                     <p>Calificaciones de Rendimiento | Nivel Politécnico</p>
                   </div>
@@ -834,47 +845,62 @@ const puedeVerPolitecnico =
 
       {reportesPrimariaAnual.length > 0 &&
         gradoReportePrimaria.includes("4") && (
-          <ReportePrimariaAnual4to reportes={reportesPrimariaAnual} />
+          <ReportePrimariaAnual4to 
+          reportes={reportesPrimariaAnual}
+          centro={centroReportePrimaria} />
         )}
 
       {reportesPrimariaAnual.length > 0 &&
         gradoReportePrimaria.includes("5") && (
-          <ReportePrimariaAnual5to reportes={reportesPrimariaAnual} />
+          <ReportePrimariaAnual5to 
+          reportes={reportesPrimariaAnual}
+          centro={centroReportePrimaria} />
         )}
 
       {reportesPrimariaAnual.length > 0 &&
         gradoReportePrimaria.includes("6") && (
-          <ReportePrimariaAnual6to reportes={reportesPrimariaAnual} />
+          <ReportePrimariaAnual6to reportes={reportesPrimariaAnual}
+          centro={centroReportePrimaria}/>
         )}
 
       {reportesSecundariaAnual.length > 0 &&
         gradoReporteSecundaria.includes("1") && (
-          <ReporteSecundariaAnual1ro reportes={reportesSecundariaAnual} />
+          <ReporteSecundariaAnual1ro reportes={reportesSecundariaAnual}
+            centro={centroReporteSecundaria}/>
         )}
 
       {reportesSecundariaAnual.length > 0 &&
         gradoReporteSecundaria.includes("2") && (
-          <ReporteSecundariaAnual2do reportes={reportesSecundariaAnual} />
+          <ReporteSecundariaAnual2do reportes={reportesSecundariaAnual} 
+            centro={centroReporteSecundaria}/>
         )}
 
       {reportesSecundariaAnual.length > 0 &&
         gradoReporteSecundaria.includes("3") && (
-          <ReporteSecundariaAnual3ro reportes={reportesSecundariaAnual} />
+          <ReporteSecundariaAnual3ro reportes={reportesSecundariaAnual} 
+            centro={centroReporteSecundaria}/>
         )}
 
       {reportesPolitecnicoAnual.length > 0 &&
         gradoReportePolitecnico.includes("4") && (
-          <ReportePolitecnicoAnual4to reportes={reportesPolitecnicoAnual} />
+         <ReportePolitecnicoAnual4to
+  reportes={reportesPolitecnicoAnual}
+  centro={centroReportePolitecnico}
+/>
         )}
 
       {reportesPolitecnicoAnual.length > 0 &&
         gradoReportePolitecnico.includes("5") && (
-          <ReportePolitecnicoAnual5to reportes={reportesPolitecnicoAnual} />
+          <ReportePolitecnicoAnual5to 
+          reportes={reportesPolitecnicoAnual} 
+            centro={centroReportePolitecnico}/>
         )}
 
       {reportesPolitecnicoAnual.length > 0 &&
         gradoReportePolitecnico.includes("6") && (
-          <ReportePolitecnicoAnual6to reportes={reportesPolitecnicoAnual} />
+          <ReportePolitecnicoAnual6to 
+          reportes={reportesPolitecnicoAnual} 
+              centro={centroReportePolitecnico}/>
         )}
     </div>
   </div>

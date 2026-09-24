@@ -3,6 +3,7 @@ import logoImage from "../../../imagenes/Captura de pantalla 2026-06-10 122000.p
 
 interface Props {
   reportes: any[];
+    centro: string;
 }
 
 const materiasBase = [
@@ -22,7 +23,7 @@ const normalizar = (texto: string) =>
 const valor = (obj: any, prop: string) =>
   obj?.[prop] ?? obj?.[prop.toUpperCase()] ?? "";
 
-const ReportePrimariaAnual4to = ({ reportes }: Props) => {
+const ReportePrimariaAnual4to = ({ reportes, centro}: Props) => {
   if (!reportes || reportes.length === 0) return null;
 
   return (
@@ -53,7 +54,7 @@ const ReportePrimariaAnual4to = ({ reportes }: Props) => {
               </div>
 
               <div className="p4-titulo">
-                <h2>Politécnico María Auxiliadora</h2>
+                  <h2>{centro}</h2>
                 <h3>Año Escolar {r.anioEscolar ?? r.AnioEscolar ?? "2025-2026"}</h3>
                 <h3>CALIFICACIONES DE RENDIMIENTO</h3>
               </div>

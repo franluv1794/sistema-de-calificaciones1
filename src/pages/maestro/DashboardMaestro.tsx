@@ -3,6 +3,7 @@ import api from "../../api/axiosConfig";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/DashboardMaestro.css";
+import "../maestro/MaestroReportesPage"
 
 import miLogo from "../../imagenes/Gemini_Generated_Image_vm4u0uvm4u0uvm4u.png";
 
@@ -116,8 +117,11 @@ const DashboardMaestro = () => {
 
           <button
             className="nav-item"
-            onClick={() => navigate("/maestro/reportes")}
+           onClick={() => navigate("/maestro/reportes")}
+           
           >
+
+          
             <span className="nav-icon">▤</span>
             <span>Reportes</span>
           </button>
@@ -129,6 +133,7 @@ const DashboardMaestro = () => {
             <span className="nav-icon">⚙</span>
             <span>Configuración</span>
           </button>
+
 
         </nav>
 
@@ -145,7 +150,7 @@ const DashboardMaestro = () => {
 
         {/* FOOTER */}
         <div className="sidebar-footer">
-          <span>© 2026 Aula</span>
+          <span>© 2026 Fundacion MIR. Todos los derechos reservados.</span>
 
           <button
             onClick={cerrarSesion}

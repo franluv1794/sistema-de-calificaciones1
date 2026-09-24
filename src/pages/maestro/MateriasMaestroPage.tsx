@@ -52,7 +52,7 @@ const MateriasMaestroPage = () => {
           </div>
 
           <div className="brand-name">
-            <span>Aula</span>
+            <span>Fundacion MIR </span>
             <strong>.</strong>
           </div>
 
@@ -149,7 +149,7 @@ const MateriasMaestroPage = () => {
         <div className="sidebar-footer">
 
           <span>
-            © 2026 Aula
+            © 2026 Fumdacion MIR. Todos los derechos reservados.
           </span>
 
           <button
