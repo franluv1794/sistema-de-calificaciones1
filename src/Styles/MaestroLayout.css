@@ -1,0 +1,67 @@
+/* =========================
+   MENÚ MÓVIL DEL MAESTRO
+========================= */
+
+.maestro-menu-toggle,
+.maestro-menu-overlay {
+  display: none;
+}
+
+@media (max-width: 700px) {
+  .maestro-layout .maestro-main {
+    margin-left: 0;
+    padding-top: 60px;
+  }
+
+  .maestro-menu-toggle {
+    position: fixed;
+    top: calc(10px + env(safe-area-inset-top, 0px));
+    left: 12px;
+    z-index: 120;
+
+    display: grid;
+    place-items: center;
+
+    width: 42px;
+    height: 42px;
+
+    border: none;
+    border-radius: 12px;
+
+    background: var(--navy, #102d43);
+    color: white;
+
+    font-size: 20px;
+    box-shadow: 0 6px 18px rgba(16, 45, 67, 0.25);
+  }
+
+  .maestro-menu-overlay {
+    display: block;
+    position: fixed;
+    inset: 0;
+    z-index: 90;
+    background: rgba(12, 32, 52, 0.45);
+  }
+
+  /* Gana sobre el display: none de los estilos de cada página */
+  .maestro-layout .maestro-sidebar {
+    display: flex;
+    width: min(280px, 85vw);
+    transform: translateX(-100%);
+    transition: transform 0.25s ease;
+    padding-top: calc(64px + env(safe-area-inset-top, 0px));
+    overflow-y: auto;
+  }
+
+  .maestro-layout .maestro-sidebar.abierto {
+    transform: translateX(0);
+    box-shadow: 0 0 40px rgba(0, 0, 0, 0.3);
+  }
+}
+
+@media print {
+  .maestro-menu-toggle,
+  .maestro-menu-overlay {
+    display: none !important;
+  }
+}

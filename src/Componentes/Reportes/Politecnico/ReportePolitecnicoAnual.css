@@ -1,4 +1,4 @@
-.reporte-pol-4to {
+.reporte-politecnico-anual {
   width: 279mm;
   min-height: 200mm;
   box-sizing: border-box;
@@ -10,195 +10,190 @@
   font-family: Arial, sans-serif;
 }
 
-.pol4-header {
+.rpol-header {
   display: grid;
   grid-template-columns: 220px 1fr 220px;
   align-items: start;
 }
 
-.pol4-logos {
+.rpol-logos {
   display: flex;
   gap: 12px;
 }
 
-.pol4-logo-text {
+.rpol-logo-text {
   width: 65px;
   height: 65px;
-  border: 2px solid #a9e8e4;
+  border: 2px solid var(--circulo);
   border-radius: 50%;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: #76e9e2;
+  color: var(--circulo-texto);
   font-weight: bold;
 }
 
-.pol4-titulo {
+.rpol-titulo {
   text-align: center;
   line-height: 1.1;
 }
 
-.pol4-titulo h2,
-.pol4-titulo h3 {
+.rpol-titulo h2,
+.rpol-titulo h3 {
   margin: 3px 0;
 }
 
-.pol4-grado {
+.rpol-grado {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  color: #1e8e88;
+  color: var(--acento);
   line-height: 0.9;
 }
 
-.pol4-numero {
+.rpol-numero {
   font-size: 105px;
   font-weight: 900;
 }
 
-.pol4-to {
+.rpol-to {
   font-size: 26px;
   font-weight: bold;
 }
 
-.pol4-grado-texto {
+.rpol-grado-texto {
   display: block;
   font-size: 38px;
   font-weight: 900;
 }
 
-.pol4-grado p {
+.rpol-grado p {
   margin: 0;
   text-align: center;
   font-size: 13px;
   font-weight: bold;
 }
 
-.pol4-nombre-container {
+.rpol-nombre-container {
   display: flex;
   align-items: center;
   margin-top: 6px;
 }
 
-.pol4-nombre-label {
+.rpol-nombre-label {
   width: 220px;
   border-top: 5px solid #555;
-  background: #b8e6cd;
+  background: var(--label);
   padding: 8px;
   font-weight: bold;
   text-align: center;
 }
 
-.pol4-nombre-estudiante {
+.rpol-nombre-estudiante {
   margin-left: 20px;
   font-size: 16px;
   font-weight: bold;
 }
 
-.pol4-tabla,
-.pol4-tabla-tecnica {
+.rpol-tabla,
+.rpol-tabla-tecnica {
   width: 100%;
   border-collapse: collapse;
   margin-top: 5px;
   font-size: 10px;
 }
 
-.pol4-tabla th,
-.pol4-tabla td,
-.pol4-tabla-tecnica th,
-.pol4-tabla-tecnica td {
+.rpol-tabla th,
+.rpol-tabla td,
+.rpol-tabla-tecnica th,
+.rpol-tabla-tecnica td {
   border: 1px solid #222;
   padding: 4px;
   text-align: center;
 }
 
-.pol4-tabla th,
-.pol4-tabla .pol4-area,
-.pol4-tabla .materia-nombre,
-.pol4-tabla-tecnica th {
-  background: #b8e6cd;
+.rpol-tabla th,
+.rpol-tabla .rpol-area,
+.rpol-tabla .materia-nombre,
+.rpol-tabla-tecnica th {
+  background: var(--th);
   font-weight: bold;
 }
 
-.pol4-tabla .materia-nombre {
+.rpol-tabla .materia-nombre {
   width: 145px;
 }
 
-.pol4-tabla .vertical {
+.rpol-tabla .vertical {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   min-width: 30px;
   height: 78px;
 }
 
-.pol4-tabla .shaded {
-  background: #dbf3e9;
+.rpol-tabla .shaded {
+  background: var(--shaded);
 }
 
-.pol4-tecnicas-title {
+.rpol-tecnicas-title {
   margin: 10px 0 4px 0;
   text-align: center;
-  background: #12a79d;
+  background: var(--barra);
   color: white;
   padding: 4px;
   font-size: 14px;
 }
-.pol4-firmas {
+.rpol-firmas {
   margin: 10px 70px 6px 70px;
 }
 
-.pol4-firmas span {
+.rpol-firmas span {
   display: block;
   border-top: 1px solid black;
   margin-bottom: 3px;
 }
 
-.pol4-firmas p {
+.rpol-firmas p {
   margin: 0;
 }
 
-.pol4-observaciones {
+.rpol-observaciones {
   border: 1px solid #222;
   height: 38px;
   padding: 7px;
   margin-bottom: 5px;
 }
 
-.pol4-footer {
+.rpol-footer {
   display: grid;
   grid-template-columns: 360px 1fr;
   gap: 5px;
 }
 
-.pol4-situacion,
-.pol4-leyenda {
+.rpol-situacion,
+.rpol-leyenda {
   border: 1px solid #222;
   padding: 7px;
   font-size: 11px;
 }
 
-.pol4-situacion p {
+.rpol-situacion p {
   margin: 2px 0 0 35px;
 }
 
-.pol4-leyenda strong {
+.rpol-leyenda strong {
   display: block;
   text-align: center;
 }
-.r7-creditos {
+.rpol-creditos {
   text-align: right;
   color: #bbb;
   font-size: 11px;
   margin-top: 8px;
 }
-.pol4-leyenda p {
+.rpol-leyenda p {
   margin: 4px 0 0 0;
-}@page {
-  size: 11in 8.5in;
-  margin: 0;
-}
-
-@media print {
+}@media print {
 
   html,
   body {
@@ -213,7 +208,7 @@
     padding: 0 !important;
   }
 
-  .reporte-pol-4to {
+  .reporte-politecnico-anual {
     width: 100% !important;
     margin: 0 !important;
     padding: 0 !important;
@@ -222,7 +217,7 @@
     break-after: page !important;
   }
 
-  .reporte-pol-4to .pol4-header {
+  .reporte-politecnico-anual .rpol-header {
     display: grid !important;
     visibility: visible !important;
     opacity: 1 !important;
@@ -232,34 +227,57 @@
     overflow: visible !important;
   }
 
-  .reporte-pol-4to .pol4-header * {
+  .reporte-politecnico-anual .rpol-header * {
     visibility: visible !important;
   }
 }
 @media print {
 
-  .pol4-firmas {
+  .rpol-firmas {
     margin-top: 6px !important;
     margin-bottom: 5px !important;
   }
 
-  .pol4-observaciones {
+  .rpol-observaciones {
     height: 30px !important;
     padding: 4px !important;
     margin-bottom: 3px !important;
   }
 
-  .pol4-situacion,
-  .pol4-leyenda {
+  .rpol-situacion,
+  .rpol-leyenda {
     padding: 4px !important;
   }
 
-  .pol4-situacion p {
+  .rpol-situacion p {
     margin: 1px 0 0 25px !important;
   }
 
-  .r7-creditos {
+  .rpol-creditos {
     margin-top: 2px !important;
     font-size: 8px !important;
   }
+}
+/* Logos y bloque de competencias (antes tomados de los estilos de secundaria) */
+.rpol-logos-mir {
+  display: flex;
+  align-items: center;
+}
+
+.rpol-logo-real {
+  width: 170px;
+  height: 70px;
+  object-fit: contain;
+}
+
+.rpol-competencias {
+  border: 1px solid #222;
+  padding: 6px;
+  font-size: 10px;
+  background: white;
+  margin: 0;
+}
+
+.rpol-competencias p {
+  margin: 2px 0;
 }

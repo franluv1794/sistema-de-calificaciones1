@@ -15,6 +15,8 @@ import {
 
 import api from "../../api/axiosConfig";
 import "../../Styles/CoordinadoresAdmin.css";
+import { confirmar, mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
+import { toast } from "react-toastify";
 
 interface Coordinador {
   idUsuario: number;
@@ -82,7 +84,7 @@ const CoordinadoresAdmin = () => {
       setCoordinadores(res.data);
     } catch (error) {
       console.error("Error cargando coordinadores:", error);
-      alert("No se pudieron cargar los coordinadores.");
+      toast.error("No se pudieron cargar los coordinadores.");
     }
   };
 
@@ -209,7 +211,7 @@ const centrosDisponibles = useMemo(() => {
       !formulario.idRol ||
       !formulario.centroId
     ) {
-      alert("Completa todos los campos.");
+      toast.warning("Completa todos los campos.");
       return;
     }
 
@@ -244,9 +246,8 @@ const centrosDisponibles = useMemo(() => {
       await cargarCoordinadores();
 
     } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "No se pudo crear el coordinador."
+      toast.error(
+        mensajeError(error, "No se pudo crear el coordinador.")
       );
     } finally {
       setCargando(false);
@@ -302,9 +303,8 @@ const centrosDisponibles = useMemo(() => {
       await cargarCoordinadores();
 
     } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "No se pudo actualizar el coordinador."
+      toast.error(
+        mensajeError(error, "No se pudo actualizar el coordinador.")
       );
     }
   };
@@ -321,9 +321,12 @@ const centrosDisponibles = useMemo(() => {
       : "activar";
 
     if (
-      !confirm(
-        `¿Seguro que deseas ${accion} este coordinador?`
-      )
+      !(await confirmar({
+        titulo: `${accion.charAt(0).toUpperCase()}${accion.slice(1)} coordinador`,
+        mensaje: `¿Seguro que deseas ${accion} este coordinador?`,
+        textoConfirmar: `Sí, ${accion}`,
+        tipo: accion === "desactivar" ? "peligro" : "info",
+      }))
     ) {
       return;
     }
@@ -336,9 +339,8 @@ const centrosDisponibles = useMemo(() => {
       await cargarCoordinadores();
 
     } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "No se pudo cambiar el estado."
+      toast.error(
+        mensajeError(error, "No se pudo cambiar el estado.")
       );
     }
   };
@@ -351,9 +353,12 @@ const centrosDisponibles = useMemo(() => {
     coordinador: Coordinador
   ) => {
     if (
-      !confirm(
-        `¿Restablecer la contraseña de ${coordinador.nombreUsuario}?`
-      )
+      !(await confirmar({
+        titulo: "Restablecer contraseña",
+        mensaje: `¿Restablecer la contraseña de ${coordinador.nombreUsuario}?`,
+        textoConfirmar: "Sí, restablecer",
+        tipo: "advertencia",
+      }))
     ) {
       return;
     }
@@ -368,9 +373,8 @@ const centrosDisponibles = useMemo(() => {
       );
 
     } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "No se pudo restablecer la contraseña."
+      toast.error(
+        mensajeError(error, "No se pudo restablecer la contraseña.")
       );
     }
   };

@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import api from "../../api/axiosConfig";
 import "./MaestroReportesPage.css";
+import { toast } from "react-toastify";
 
 interface Asignacion {
   idAsignacionDocente: number;
@@ -24,7 +25,15 @@ const MaestroReportesPage = () => {
       try {
         const res = await api.get("/PanelMaestro/mis-asignaciones");
 
-        console.log("ASIGNACIONES DEL MAESTRO:", res.data);
+       console.log(
+  "ASIGNACIONES DEL MAESTRO:",
+  JSON.stringify(res.data, null, 2)
+);
+
+console.log(
+  "PRIMERA ASIGNACIÓN:",
+  res.data?.[0]
+);
 
         setAsignaciones(res.data);
       } catch (error: any) {
@@ -43,7 +52,7 @@ const MaestroReportesPage = () => {
 
   const abrirReporte = (asignacion: Asignacion) => {
     if (!asignacion.idCurso) {
-      alert("No se pudo identificar el curso.");
+      toast.error("No se pudo identificar el curso.");
       console.error("Asignación sin idCurso:", asignacion);
       return;
     }

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { confirmar, mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
+import { toast } from "react-toastify";
 
 interface Grado {
   idGrado: number;
@@ -95,7 +97,7 @@ const GradoMateriasPage = () => {
     e.preventDefault();
 
     if (porSeccion && !idCurso) {
-      alert("Debe seleccionar una sección.");
+      toast.warning("Debe seleccionar una sección.");
       return;
     }
 
@@ -109,27 +111,34 @@ const GradoMateriasPage = () => {
     try {
       await api.post("/GradoMaterias", payload);
 
-      alert(
-        porSeccion
+      toast.success(porSeccion
           ? "Materia asignada correctamente a la sección."
-          : "Materia asignada correctamente al grado."
-      );
+          : "Materia asignada correctamente al grado.");
 
       limpiar();
       cargarDatos();
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al asignar la materia.");
+      toast.error(
+        mensajeError(error, "Error al asignar la materia.")
+      );
     }
   };
 
   const eliminar = async (id: number) => {
-    if (!confirm("¿Seguro que deseas quitar esta materia del grado?")) return;
+    if (!(await confirmar({
+      titulo: "Quitar materia",
+      mensaje: "¿Seguro que deseas quitar esta materia del grado?",
+      textoConfirmar: "Sí, quitar",
+      tipo: "peligro",
+    }))) return;
 
     try {
       await api.delete(`/GradoMaterias/${id}`);
       cargarDatos();
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al eliminar la asignación.");
+      toast.error(
+        mensajeError(error, "Error al eliminar la asignación.")
+      );
     }
   };
 

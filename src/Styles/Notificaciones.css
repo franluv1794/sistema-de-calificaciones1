@@ -1,0 +1,282 @@
+/* =========================================================
+   Notificaciones globales (toasts) y diálogo de confirmación
+   ========================================================= */
+
+:root {
+  --notif-azul: #0b239c;
+  --notif-azul-oscuro: #071a78;
+  --notif-texto: #102a43;
+  --notif-muted: #5f7189;
+  --notif-borde: #e4eaf1;
+
+  --notif-exito: #12a150;
+  --notif-exito-suave: #e8f8ef;
+  --notif-error: #d64545;
+  --notif-error-suave: #fff1f1;
+  --notif-advertencia: #e09b12;
+  --notif-advertencia-suave: #fff7e6;
+  --notif-info: #0b239c;
+  --notif-info-suave: #eef2ff;
+
+  --toastify-font-family: inherit;
+  --toastify-toast-bd-radius: 14px;
+  --toastify-toast-width: 380px;
+  --toastify-toast-min-height: 64px;
+  --toastify-z-index: 10000;
+  --toastify-color-light: #ffffff;
+  --toastify-text-color-light: var(--notif-texto);
+  --toastify-color-success: var(--notif-exito);
+  --toastify-color-error: var(--notif-error);
+  --toastify-color-warning: var(--notif-advertencia);
+  --toastify-color-info: var(--notif-info);
+  --toastify-color-progress-success: var(--notif-exito);
+  --toastify-color-progress-error: var(--notif-error);
+  --toastify-color-progress-warning: var(--notif-advertencia);
+  --toastify-color-progress-info: var(--notif-info);
+}
+
+/* ---------- Toasts ---------- */
+
+.Toastify__toast.notificacion {
+  position: relative;
+  overflow: hidden;
+  padding: 14px 16px 14px 18px;
+  border: 1px solid var(--notif-borde);
+  border-radius: 14px;
+  background: #ffffff;
+  color: var(--notif-texto);
+  box-shadow:
+    0 12px 32px rgba(12, 32, 52, 0.14),
+    0 2px 6px rgba(12, 32, 52, 0.06);
+  font-size: 14px;
+  font-weight: 500;
+  line-height: 1.45;
+}
+
+.Toastify__toast.notificacion::before {
+  content: "";
+  position: absolute;
+  inset: 0 auto 0 0;
+  width: 5px;
+  background: var(--notif-acento, var(--notif-info));
+}
+
+.Toastify__toast.notificacion .Toastify__toast-icon {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  margin-inline-end: 12px;
+  border-radius: 10px;
+  color: var(--notif-acento, var(--notif-info));
+  background: var(--notif-acento-suave, var(--notif-info-suave));
+  flex-shrink: 0;
+}
+
+.Toastify__toast.notificacion.Toastify__toast--success {
+  --notif-acento: var(--notif-exito);
+  --notif-acento-suave: var(--notif-exito-suave);
+}
+
+.Toastify__toast.notificacion.Toastify__toast--error {
+  --notif-acento: var(--notif-error);
+  --notif-acento-suave: var(--notif-error-suave);
+}
+
+.Toastify__toast.notificacion.Toastify__toast--warning {
+  --notif-acento: var(--notif-advertencia);
+  --notif-acento-suave: var(--notif-advertencia-suave);
+}
+
+.Toastify__toast.notificacion.Toastify__toast--info,
+.Toastify__toast.notificacion.Toastify__toast--default {
+  --notif-acento: var(--notif-info);
+  --notif-acento-suave: var(--notif-info-suave);
+}
+
+.Toastify__toast.notificacion .Toastify__close-button {
+  align-self: flex-start;
+  color: var(--notif-muted);
+  opacity: 0.6;
+}
+
+.Toastify__toast.notificacion .Toastify__close-button:hover {
+  opacity: 1;
+}
+
+.Toastify__toast.notificacion .Toastify__progress-bar {
+  height: 3px;
+}
+
+@media (max-width: 480px) {
+  .Toastify__toast-container {
+    padding: 8px;
+  }
+
+  .Toastify__toast.notificacion {
+    margin-bottom: 8px;
+    border-radius: 12px;
+  }
+}
+
+/* ---------- Diálogo de confirmación ---------- */
+
+.confirmacion-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 10001;
+  display: grid;
+  place-items: center;
+  padding: 16px;
+  background: rgba(12, 32, 52, 0.45);
+  backdrop-filter: blur(3px);
+  animation: confirmacion-fade 0.18s ease-out;
+}
+
+.confirmacion-dialogo {
+  --conf-acento: var(--notif-advertencia);
+  --conf-acento-suave: var(--notif-advertencia-suave);
+
+  position: relative;
+  width: 100%;
+  max-width: 420px;
+  padding: 28px 28px 24px;
+  border-radius: 18px;
+  background: #ffffff;
+  color: var(--notif-texto);
+  text-align: center;
+  box-shadow: 0 24px 60px rgba(12, 32, 52, 0.28);
+  animation: confirmacion-entrada 0.22s cubic-bezier(0.2, 0.9, 0.3, 1.2);
+}
+
+.confirmacion-peligro {
+  --conf-acento: var(--notif-error);
+  --conf-acento-suave: var(--notif-error-suave);
+}
+
+.confirmacion-info {
+  --conf-acento: var(--notif-azul);
+  --conf-acento-suave: var(--notif-info-suave);
+}
+
+.confirmacion-exito {
+  --conf-acento: var(--notif-exito);
+  --conf-acento-suave: var(--notif-exito-suave);
+}
+
+.confirmacion-cerrar {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  display: grid;
+  place-items: center;
+  width: 32px;
+  height: 32px;
+  border: none;
+  border-radius: 8px;
+  background: transparent;
+  color: var(--notif-muted);
+  cursor: pointer;
+}
+
+.confirmacion-cerrar:hover {
+  background: #f2f5f9;
+  color: var(--notif-texto);
+}
+
+.confirmacion-icono {
+  display: grid;
+  place-items: center;
+  width: 60px;
+  height: 60px;
+  margin: 0 auto 16px;
+  border-radius: 50%;
+  color: var(--conf-acento);
+  background: var(--conf-acento-suave);
+  box-shadow: 0 0 0 8px color-mix(in srgb, var(--conf-acento-suave) 50%, transparent);
+}
+
+.confirmacion-dialogo h3 {
+  margin: 0 0 8px;
+  font-size: 19px;
+  font-weight: 700;
+  color: var(--notif-texto);
+}
+
+.confirmacion-dialogo p {
+  margin: 0 0 24px;
+  font-size: 14.5px;
+  line-height: 1.55;
+  color: var(--notif-muted);
+  white-space: pre-line;
+  overflow-wrap: anywhere;
+}
+
+.confirmacion-acciones {
+  display: flex;
+  gap: 10px;
+}
+
+.confirmacion-btn {
+  flex: 1;
+  min-height: 44px;
+  padding: 0 18px;
+  border-radius: 10px;
+  font: inherit;
+  font-size: 14.5px;
+  font-weight: 600;
+  cursor: pointer;
+  transition:
+    background 0.15s ease,
+    transform 0.1s ease,
+    box-shadow 0.15s ease;
+}
+
+.confirmacion-btn:active {
+  transform: scale(0.98);
+}
+
+.confirmacion-btn-cancelar {
+  border: 1px solid var(--notif-borde);
+  background: #ffffff;
+  color: var(--notif-texto);
+}
+
+.confirmacion-btn-cancelar:hover {
+  background: #f4f7fb;
+}
+
+.confirmacion-btn-confirmar {
+  border: 1px solid transparent;
+  background: var(--conf-acento);
+  color: #ffffff;
+  box-shadow: 0 6px 16px color-mix(in srgb, var(--conf-acento) 30%, transparent);
+}
+
+.confirmacion-btn-confirmar:hover {
+  filter: brightness(0.95);
+}
+
+.confirmacion-btn:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--conf-acento) 35%, transparent);
+  outline-offset: 2px;
+}
+
+@media (max-width: 420px) {
+  .confirmacion-acciones {
+    flex-direction: column-reverse;
+  }
+}
+
+@keyframes confirmacion-fade {
+  from {
+    opacity: 0;
+  }
+}
+
+@keyframes confirmacion-entrada {
+  from {
+    opacity: 0;
+    transform: translateY(12px) scale(0.96);
+  }
+}

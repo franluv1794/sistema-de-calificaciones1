@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { toast } from "react-toastify";
+import { mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
 
 interface Maestro {
   idMaestro: number;
@@ -30,7 +32,7 @@ const MaestrosPage = () => {
       setMaestros(res.data);
     } catch (error) {
       console.error(error);
-      alert("No se pudieron cargar los maestros.");
+      toast.error("No se pudieron cargar los maestros.");
     }
   };
 
@@ -42,7 +44,7 @@ const MaestrosPage = () => {
     e.preventDefault();
 
     if (!archivo) {
-      alert("Selecciona un archivo Excel.");
+      toast.warning("Selecciona un archivo Excel.");
       return;
     }
 
@@ -95,9 +97,8 @@ const MaestrosPage = () => {
       await api.put(`/Maestros/${id}/estado`);
       await cargarMaestros();
     } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "No se pudo cambiar el estado del maestro."
+      toast.error(
+        mensajeError(error, "No se pudo cambiar el estado del maestro.")
       );
     }
   };

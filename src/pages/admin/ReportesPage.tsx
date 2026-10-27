@@ -1,15 +1,11 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
-import ReporteSecundariaAnual3ro from "../../Componentes/Reportes/Secundaria/ReporteSecundariaAnual3ro";
-import ReportePrimariaAnual4to from "../../Componentes/Reportes/Primaria/ReportePrimariaAnual4to";
-import ReportePrimariaAnual5to from "../../Componentes/Reportes/Primaria/ReportePrimariaAnual5to";
-import ReportePrimariaAnual6to from "../../Componentes/Reportes/Primaria/ReportePrimariaAnual6to";
-import ReporteSecundariaAnual2do from "../../Componentes/Reportes/Secundaria/ReporteSecundariaAnual2do";
-import ReporteSecundariaAnual1ro from "../../Componentes/Reportes/Secundaria/ReporteSecundariaAnual1ro";
-import ReportePolitecnicoAnual6to from "../../Componentes/Reportes/Politecnico/ReportePolitecnicoAnual6to";
-import ReportePolitecnicoAnual5to from "../../Componentes/Reportes/Politecnico/ReportePolitecnicoAnual5to";
-import ReportePolitecnicoAnual4to from "../../Componentes/Reportes/Politecnico/ReportePolitecnicoAnual4to";
+import ReportePrimariaAnual from "../../Componentes/Reportes/Primaria/ReportePrimariaAnual";
+import ReporteSecundariaAnual from "../../Componentes/Reportes/Secundaria/ReporteSecundariaAnual";
+import ReportePolitecnicoAnual from "../../Componentes/Reportes/Politecnico/ReportePolitecnicoAnual";
 import "../../Styles/ReportesPrint.css";
+import { toast } from "react-toastify";
+import { mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
 interface Estudiante {
   idEstudiante: number;
   matricula: string;
@@ -113,7 +109,7 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
   };
 
   const boletinEstudiante = async () => {
-    if (!idEstudiante) return alert("Selecciona un estudiante.");
+    if (!idEstudiante) return toast.warning("Selecciona un estudiante.");
     const res = await api.get(`/Reportes/boletin-estudiante/${idEstudiante}`);
     setResultado(res.data);
     limpiarReportes();
@@ -121,7 +117,7 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
   };
 
   const calificacionesCurso = async () => {
-    if (!idCurso || !idPeriodo) return alert("Selecciona curso y período.");
+    if (!idCurso || !idPeriodo) return toast.warning("Selecciona curso y período.");
     const res = await api.get(`/Reportes/calificaciones-curso?idCurso=${idCurso}&idPeriodoPublicacion=${idPeriodo}`);
     setResultado(res.data);
     limpiarReportes();
@@ -129,7 +125,7 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
   };
 
   const reporteAnualPrimaria = async () => {
-    if (!idCurso) return alert("Selecciona un curso.");
+    if (!idCurso) return toast.warning("Selecciona un curso.");
     try {
       const res = await api.get(`/Reportes/primaria/anual/curso/${idCurso}`);
       const data = res.data;
@@ -146,12 +142,14 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
       setMostrarTablaPendientes(false);
       setTituloReporte(`${data.grado ?? data.Grado} - ${data.curso ?? data.Curso} / Reporte anual primaria`);
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al generar reporte anual de primaria.");
+      toast.error(
+        mensajeError(error, "Error al generar reporte anual de primaria.")
+      );
     }
   };
 
   const reportePrimariaCursoPeriodo = async () => {
-    if (!idCurso || !idPeriodo) return alert("Selecciona curso y período.");
+    if (!idCurso || !idPeriodo) return toast.warning("Selecciona curso y período.");
     try {
       const res = await api.get(`/Reportes/primaria/curso/${idCurso}/periodo/${idPeriodo}`);
       const data = res.data;
@@ -168,12 +166,14 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
       setMostrarTablaPendientes(false);
       setTituloReporte(`${data.grado ?? data.Grado} - ${data.curso ?? data.Curso} / ${data.periodo ?? data.Periodo}`);
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al generar reporte de primaria.");
+      toast.error(
+        mensajeError(error, "Error al generar reporte de primaria.")
+      );
     }
   };
 
   const reporteSecundariaCursoPeriodo = async () => {
-    if (!idCurso || !idPeriodo) return alert("Selecciona curso y período.");
+    if (!idCurso || !idPeriodo) return toast.warning("Selecciona curso y período.");
     try {
       const res = await api.get(`/Reportes/secundaria/curso/${idCurso}/periodo/${idPeriodo}`);
       const data = res.data;
@@ -185,12 +185,14 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
       setMostrarTablaPendientes(false);
       setTituloReporte(`${data.grado ?? data.Grado} - ${data.curso ?? data.Curso} / ${data.periodo ?? data.Periodo}`);
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al generar reporte de secundaria.");
+      toast.error(
+        mensajeError(error, "Error al generar reporte de secundaria.")
+      );
     }
   };
 
   const reporteAnualSecundaria = async () => {
-    if (!idCurso) return alert("Selecciona un curso.");
+    if (!idCurso) return toast.warning("Selecciona un curso.");
     try {
       const res = await api.get(`/Reportes/secundaria/anual/curso/${idCurso}`);
       const data = res.data;
@@ -203,12 +205,14 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
       setMostrarTablaPendientes(false);
       setTituloReporte(`${data.grado ?? data.Grado} - ${data.curso ?? data.Curso} / Reporte anual`);
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al generar reporte anual.");
+      toast.error(
+        mensajeError(error, "Error al generar reporte anual.")
+      );
     }
   };
 
   const reportePolitecnicoCursoPeriodo = async () => {
-    if (!idCurso || !idPeriodo) return alert("Selecciona curso y período.");
+    if (!idCurso || !idPeriodo) return toast.warning("Selecciona curso y período.");
     try {
       const res = await api.get(`/Reportes/politecnico/curso/${idCurso}/periodo/${idPeriodo}`);
       const data = res.data;
@@ -222,12 +226,14 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
       setMostrarTablaPendientes(false);
       setTituloReporte(`${data.grado ?? data.Grado} - ${data.curso ?? data.Curso} / ${data.periodo ?? data.Periodo} / Reporte politécnico`);
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al generar reporte politécnico.");
+      toast.error(
+        mensajeError(error, "Error al generar reporte politécnico.")
+      );
     }
   };
 
   const reporteAnualPolitecnico = async () => {
-    if (!idCurso) return alert("Selecciona un curso.");
+    if (!idCurso) return toast.warning("Selecciona un curso.");
     try {
       const res = await api.get(`/Reportes/politecnico/anual/curso/${idCurso}`);
       const data = res.data;
@@ -243,12 +249,14 @@ const [centroReporteSecundaria, setCentroReporteSecundaria] = useState("");
       setMostrarTablaPendientes(false);
       setTituloReporte(`${data.grado ?? data.Grado} - ${data.curso ?? data.Curso} / Reporte anual politécnico`);
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al generar reporte anual politécnico.");
+      toast.error(
+        mensajeError(error, "Error al generar reporte anual politécnico.")
+      );
     }
   };
 
   const maestrosPendientes = async () => {
-    if (!idPeriodo) return alert("Selecciona un período.");
+    if (!idPeriodo) return toast.warning("Selecciona un período.");
     const res = await api.get(`/Reportes/maestros-pendientes?idPeriodoPublicacion=${idPeriodo}`);
     setResultado(res.data);
     setMostrarTablaPendientes(true);
@@ -843,65 +851,29 @@ const puedeVerPolitecnico =
         </div>
       )}
 
-      {reportesPrimariaAnual.length > 0 &&
-        gradoReportePrimaria.includes("4") && (
-          <ReportePrimariaAnual4to 
+      {reportesPrimariaAnual.length > 0 && (
+        <ReportePrimariaAnual
           reportes={reportesPrimariaAnual}
-          centro={centroReportePrimaria} />
-        )}
+          centro={centroReportePrimaria}
+          grado={gradoReportePrimaria}
+        />
+      )}
 
-      {reportesPrimariaAnual.length > 0 &&
-        gradoReportePrimaria.includes("5") && (
-          <ReportePrimariaAnual5to 
-          reportes={reportesPrimariaAnual}
-          centro={centroReportePrimaria} />
-        )}
+      {reportesSecundariaAnual.length > 0 && (
+        <ReporteSecundariaAnual
+          reportes={reportesSecundariaAnual}
+          centro={centroReporteSecundaria}
+          grado={gradoReporteSecundaria}
+        />
+      )}
 
-      {reportesPrimariaAnual.length > 0 &&
-        gradoReportePrimaria.includes("6") && (
-          <ReportePrimariaAnual6to reportes={reportesPrimariaAnual}
-          centro={centroReportePrimaria}/>
-        )}
-
-      {reportesSecundariaAnual.length > 0 &&
-        gradoReporteSecundaria.includes("1") && (
-          <ReporteSecundariaAnual1ro reportes={reportesSecundariaAnual}
-            centro={centroReporteSecundaria}/>
-        )}
-
-      {reportesSecundariaAnual.length > 0 &&
-        gradoReporteSecundaria.includes("2") && (
-          <ReporteSecundariaAnual2do reportes={reportesSecundariaAnual} 
-            centro={centroReporteSecundaria}/>
-        )}
-
-      {reportesSecundariaAnual.length > 0 &&
-        gradoReporteSecundaria.includes("3") && (
-          <ReporteSecundariaAnual3ro reportes={reportesSecundariaAnual} 
-            centro={centroReporteSecundaria}/>
-        )}
-
-      {reportesPolitecnicoAnual.length > 0 &&
-        gradoReportePolitecnico.includes("4") && (
-         <ReportePolitecnicoAnual4to
-  reportes={reportesPolitecnicoAnual}
-  centro={centroReportePolitecnico}
-/>
-        )}
-
-      {reportesPolitecnicoAnual.length > 0 &&
-        gradoReportePolitecnico.includes("5") && (
-          <ReportePolitecnicoAnual5to 
-          reportes={reportesPolitecnicoAnual} 
-            centro={centroReportePolitecnico}/>
-        )}
-
-      {reportesPolitecnicoAnual.length > 0 &&
-        gradoReportePolitecnico.includes("6") && (
-          <ReportePolitecnicoAnual6to 
-          reportes={reportesPolitecnicoAnual} 
-              centro={centroReportePolitecnico}/>
-        )}
+      {reportesPolitecnicoAnual.length > 0 && (
+        <ReportePolitecnicoAnual
+          reportes={reportesPolitecnicoAnual}
+          centro={centroReportePolitecnico}
+          grado={gradoReportePolitecnico}
+        />
+      )}
     </div>
   </div>
 );

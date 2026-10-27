@@ -1,9 +1,4 @@
-@page {
-  size: letter landscape;
-  margin: 6mm;
-}
-
-.reporte-5to-primaria {
+.reporte-primaria-anual {
   width: 1100px;
   background: white;
   color: black;
@@ -13,67 +8,67 @@
   page-break-after: always;
 }
 
-.p5-header {
+.rpa-header {
   display: grid;
   grid-template-columns: 220px 1fr 230px;
   align-items: start;
 }
 
-.p5-logo {
+.rpa-logo {
   width: 170px;
   height: 70px;
   object-fit: contain;
 }
 
-.p5-titulo {
+.rpa-titulo {
   text-align: center;
   line-height: 1.1;
 }
 
-.p5-titulo h2,
-.p5-titulo h3 {
+.rpa-titulo h2,
+.rpa-titulo h3 {
   margin: 3px 0;
 }
 
-.p5-grado {
+.rpa-grado {
   text-align: center;
-  color: #9f9338;
+  color: var(--acento);
   font-weight: bold;
 }
 
-.p5-icono {
+.rpa-icono {
   font-size: 42px;
   color: #c9b0dd;
   line-height: 1;
 }
 
-.p5-grado h2 {
+.rpa-grado h2 {
   margin: 0;
   font-size: 23px;
 }
 
-.p5-grado h3 {
+.rpa-grado h3 {
   margin: 0;
   font-size: 16px;
 }
 
-.p5-nombre-container {
+.rpa-nombre-container {
   display: flex;
   align-items: end;
   margin-top: 8px;
   margin-bottom: 8px;
 }
 
-.p5-nombre-label {
+.rpa-nombre-label {
   width: 220px;
   border-top: 5px solid #555;
-  background:  #fff3bf;
+  background: var(--suave);
   text-align: center;
   font-weight: bold;
   padding: 8px;
 }
 
-.p5-nombre-linea {
+.rpa-nombre-linea {
   flex: 1;
   border-bottom: 1px solid #222;
   margin-left: 10px;
@@ -82,8 +77,8 @@
   font-size: 14px;
 }
 
-.p5-barra {
-  background: #9f9338;
+.rpa-barra {
+  background: var(--barra);
   color: white;
   font-weight: bold;
   text-align: center;
@@ -91,59 +86,59 @@
   margin-bottom: 8px;
 }
 
-.p5-tabla {
+.rpa-tabla {
   width: 100%;
   border-collapse: collapse;
   font-size: 10px;
 }
 
-.p5-tabla th,
-.p5-tabla td {
+.rpa-tabla th,
+.rpa-tabla td {
   border: 1px solid #222;
   padding: 4px;
   text-align: center;
 }
 
-.p5-tabla th {
-  background: #fff3bf;
+.rpa-tabla th {
+  background: var(--suave);
   font-weight: bold;
 }
 
-.p5-area-vertical {
-  background: #fff3bf;
+.rpa-area-vertical {
+  background: var(--suave);
   font-weight: bold;
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   width: 30px;
 }
 
-.p5-materia {
+.rpa-materia {
   font-weight: bold;
   text-align: left !important;
   width: 145px;
 }
 
-.p5-tabla .vertical {
+.rpa-tabla .vertical {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   width: 28px;
-  background:#fff3bf;
+  background: var(--suave);
 }
 
-.p5-observaciones {
+.rpa-observaciones {
   width: 100%;
   border-collapse: collapse;
   margin-top: 18px;
   font-size: 12px;
 }
 
-.p5-observaciones td {
+.rpa-observaciones td {
   border: 1px solid #222;
   height: 36px;
 }
 
-.p5-observaciones-title {
-  background: #fff3bf;
+.rpa-observaciones-title {
+  background: var(--suave);
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   font-weight: bold;
@@ -151,57 +146,57 @@
   width: 28px;
 }
 
-.p5-periodo-label {
-  background: #fff3bf;
+.rpa-periodo-label {
+  background: var(--suave);
   font-weight: bold;
   text-align: center;
   width: 35px;
 }
 
-.p5-footer {
+.rpa-footer {
   display: grid;
   grid-template-columns: 1.2fr 0.45fr 1.75fr;
   gap: 22px;
   margin-top: 14px;
 }
 
-.p5-asistencia,
-.p5-escala {
+.rpa-asistencia,
+.rpa-escala {
   width: 100%;
   border-collapse: collapse;
   font-size: 10px;
 }
 
-.p5-asistencia th,
-.p5-asistencia td,
-.p5-escala th,
-.p5-escala td {
+.rpa-asistencia th,
+.rpa-asistencia td,
+.rpa-escala th,
+.rpa-escala td {
   border: 1px solid #222;
   padding: 5px;
   text-align: center;
 }
 
-.p5-asistencia th,
-.p5-escala th {
-  background: #fff3bf;
+.rpa-asistencia th,
+.rpa-escala th {
+  background: var(--suave);
 }
 
-.p5-leyenda {
+.rpa-leyenda {
   border: 1px solid #222;
   padding: 6px;
   font-size: 9px;
 }
 
-.p5-leyenda strong {
+.rpa-leyenda strong {
   display: block;
   text-align: center;
 }
 
-.p5-leyenda p {
+.rpa-leyenda p {
   margin: 2px 0;
 }
 
-.p5-escala td:last-child {
+.rpa-escala td:last-child {
   text-align: left;
 }
 
@@ -222,7 +217,7 @@
     background: white !important;
   }
 
-  .reporte-5to-primaria {
+  .reporte-primaria-anual {
     width: 100%;
     margin: 0;
     padding: 0;

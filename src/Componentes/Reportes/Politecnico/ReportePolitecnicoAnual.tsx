@@ -1,11 +1,21 @@
-import "./ReportePolitecnicoAnual4to.css";
-import logoImage from "../../../imagenes/Captura de pantalla 2026-06-10 122000.png";
-import LogoMinerd from "../../../imagenes/download.png";
+import "./ReportePolitecnicoAnual.css";
+import logoImage from "../../imagenes/logo-mir.png";
+import LogoMinerd from "../../imagenes/download.png";
+import { filasMaterias, infoGrado, temaGrado } from "../gradoReporte";
 
 interface Props {
   reportes: any[];
-    centro: string;
+  centro: string;
+  grado: string;
 }
+
+// Colores de cada grado (0 = por defecto)
+const paletas: Record<number, Record<string, string>> = {
+  0: { circulo: "#a9e8e4", "circulo-texto": "#76e9e2", acento: "#1e8e88", label: "#b8e6cd", th: "#b8e6cd", shaded: "#dbf3e9", barra: "#12a79d" },
+  4: { circulo: "#a9e8e4", "circulo-texto": "#76e9e2", acento: "#1e8e88", label: "#b8e6cd", th: "#b8e6cd", shaded: "#dbf3e9", barra: "#12a79d" },
+  5: { circulo: "#d60b52", "circulo-texto": "#d60b52", acento: "#d60b52", label: "#e6b8cf", th: "#ffdbe4", shaded: "#f3dbed", barra: "#d60b52" },
+  6: { circulo: "#1f75bc", "circulo-texto": "#1f75bc", acento: "#1f75bc", label: "#b8c9e6", th: "#b8c9e6", shaded: "#dbe5f3", barra: "#1f75bc" },
+};
 
 const materiasBase = [
   "Lengua Española",
@@ -18,11 +28,11 @@ const materiasBase = [
   "Formación Integral Humana y Religiosa",
 ];
 
-const normalizar = (texto: string) =>
-  texto?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-const ReportePolitecnicoAnual4to = ({ reportes, centro  }: Props) => {
+const ReportePolitecnicoAnual = ({ reportes, centro, grado }: Props) => {
   if (!reportes || reportes.length === 0) return null;
+
+  const info = infoGrado(grado);
+  const tema = temaGrado(paletas, info.numero);
 
   return (
     <div className="reportes-politecnico-anual">
@@ -30,50 +40,47 @@ const ReportePolitecnicoAnual4to = ({ reportes, centro  }: Props) => {
         const normales = r.materiasNormales ?? r.MateriasNormales ?? [];
         const tecnicas = r.materiasTecnicas ?? r.MateriasTecnicas ?? [];
 
-        const buscarMateria = (nombre: string) =>
-          normales.find((m: any) =>
-            normalizar(m.materia ?? m.Materia ?? "").includes(normalizar(nombre))
-          );
+        const filas = filasMaterias(materiasBase, normales);
 
         return (
-          <div className="reporte-pol-4to" key={r.idEstudiante ?? index}>
-            <header className="pol4-header">
-              <div className="pol4-logos">
-                <div className="pol4-logo-text">
-                   <img src={LogoMinerd} alt="Logo institución" className="r4-logo-real" />
+          <div className="reporte-politecnico-anual" key={r.idEstudiante ?? index} style={tema}>
+            <header className="rpol-header">
+              <div className="rpol-logos">
+                <div className="rpol-logo-text">
+                   <img src={LogoMinerd} alt="Logo institución" className="rpol-logo-real" />
                    </div>
-                <div className="r5-logos">
-                <img src={logoImage} alt="Logo institución" className="r4-logo-real" />
+                <div className="rpol-logos-mir">
+                <img src={logoImage} alt="Logo institución" className="rpol-logo-real" />
               </div>
               </div>
 
-              <div className="pol4-titulo">
+              <div className="rpol-titulo">
               <h2>{centro}</h2>
-                <h3>Año Escolar 2025-2026</h3>
+                <h3>Año Escolar {r.anioEscolar ?? r.AnioEscolar ?? "2025-2026"}</h3>
                 <h3>CALIFICACIONES DE RENDIMIENTO</h3>
               </div>
 
-              <div className="pol4-grado">
-                <span className="pol4-numero">4</span>
+              <div className="rpol-grado">
+                <span className="rpol-numero">{info.numero || grado}</span>
                 <div>
-                  <span className="pol4-to">to</span>
-                  <span className="pol4-grado-texto">Grado</span>
+                  <span className="rpol-to">{info.sufijo}</span>
+                  <span className="rpol-grado-texto">Grado</span>
                   <p>NIVEL POLITÉCNICO</p>
                 </div>
               </div>
             </header>
 
-            <div className="pol4-nombre-container">
-              <div className="pol4-nombre-label">NOMBRES Y APELLIDOS</div>
-              <div className="pol4-nombre-estudiante">
+            <div className="rpol-nombre-container">
+              <div className="rpol-nombre-label">NOMBRES Y APELLIDOS</div>
+              <div className="rpol-nombre-estudiante">
                 {r.estudiante ?? r.Estudiante}
               </div>
             </div>
 
-            <table className="pol4-tabla">
+            <table className="rpol-tabla">
               <thead>
                 <tr>
-                  <th rowSpan={3} className="pol4-area">
+                  <th rowSpan={3} className="rpol-area">
                     ÁREAS<br />CURRICULARES
                   </th>
                   <th colSpan={5}>CALIFICACIONES DE RENDIMIENTO</th>
@@ -110,8 +117,7 @@ const ReportePolitecnicoAnual4to = ({ reportes, centro  }: Props) => {
               </thead>
 
               <tbody>
-                {materiasBase.map((nombreMateria) => {
-                  const m = buscarMateria(nombreMateria);
+                {filas.map(({ nombre: nombreMateria, materia: m }) => {
 
                   return (
                     <tr key={nombreMateria}>
@@ -140,9 +146,9 @@ const ReportePolitecnicoAnual4to = ({ reportes, centro  }: Props) => {
               </tbody>
             </table>
 
-            <h3 className="pol4-tecnicas-title">MATERIAS TÉCNICAS</h3>
+            <h3 className="rpol-tecnicas-title">MATERIAS TÉCNICAS</h3>
 
-            <table className="pol4-tabla-tecnica">
+            <table className="rpol-tabla-tecnica">
               <thead>
                 <tr>
                   <th>Materia técnica</th>
@@ -175,7 +181,7 @@ const ReportePolitecnicoAnual4to = ({ reportes, centro  }: Props) => {
               </tbody>
             </table>
 
-            <div className="pol4-firmas">
+            <div className="rpol-firmas">
               <div>
                 <span></span>
                 <p>Maestro/a encargado del curso</p>
@@ -188,39 +194,41 @@ const ReportePolitecnicoAnual4to = ({ reportes, centro  }: Props) => {
               </div>
             </div>
 
-             <div className="pol4-bloque-observacion-competencias">
-              <div className="pol4-observaciones">
+             <div className="rpol-bloque-observacion-competencias">
+              <div className="rpol-observaciones">
                 <strong>Observaciones:</strong>
               </div>
 
-              <div className="r5-competencias">
+              <div className="rpol-competencias">
                 <p>PC1 Comunicativa</p>
                 <p>PC2 Pensamiento Lógico, Creativo y Crítico | Resolución de Problema</p>
                 <p>PC3 Científica y Tecnológica | Ambiental y de la Salud</p>
                 <p>PC4 Ética y Ciudadana | Desarrollo Personal y Espiritual</p>
+                <p>RA1 - RA12 Resultados de Aprendizaje de los módulos técnicos</p>
               </div>
             </div>
 
-            <div className="pol4-footer">
-              <div className="pol4-situacion">
+            <div className="rpol-footer">
+              <div className="rpol-situacion">
                 <strong>Situación de la Estudiante (Marcar con una X)</strong>
                 <p>□ Promovida</p>
                 <p>□ Promovida con asignatura pendiente</p>
                 <p>□ Repitente</p>
               </div>
 
-              <div className="pol4-leyenda">
+              <div className="rpol-leyenda">
                 <strong>Leyenda</strong>
                 <p>
-                  PC Promedio Grupo de Competencia | % A.A. Porciento Asistencia Anual |
-                  C.F. Calificación Final | C.E.C. Calificación Evaluación Completiva |
-                  C.C.F. Calificación Completiva Final | C.E.EX. Calificación Evaluación
-                  Extraordinaria | C.EX.F Calificación Extraordinaria Final | C.E.
-                  Calificación Especial | A. Aprobado | R. Reprobado
+                  PC Promedio Grupo de Competencia | RA Resultado de Aprendizaje |
+                  % A.A. Porciento Asistencia Anual | C.F. Calificación Final |
+                  C.E.C. Calificación Evaluación Completiva | C.C.F. Calificación
+                  Completiva Final | C.E.EX. Calificación Evaluación Extraordinaria |
+                  C.EX.F Calificación Extraordinaria Final | C.E. Calificación Especial |
+                  A. Aprobado | R. Reprobado
                 </p>
               </div>
             </div>
-                <div className="r7-creditos">
+                <div className="rpol-creditos">
               LICDA.JUANA GIL DE LA ROSA | Coordinadora Pedagógica
             </div>
               </div>
@@ -231,4 +239,4 @@ const ReportePolitecnicoAnual4to = ({ reportes, centro  }: Props) => {
   );
 };
 
-export default ReportePolitecnicoAnual4to;
+export default ReportePolitecnicoAnual;

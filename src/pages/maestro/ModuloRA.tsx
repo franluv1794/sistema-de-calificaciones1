@@ -1,7 +1,8 @@
 import { useEffect, useMemo, useState } from "react";
 import api from "../../api/axiosConfig";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import "../../Styles/ModuloRA.css";
+import { mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
 
 interface Props {
   idAsignacionDocente: number;
@@ -180,12 +181,12 @@ useEffect(() => {
     const valor = Number(valorMaximo);
 
     if (!nombreRA.trim()) {
-      alert("Escribe el nombre del RA.");
+      toast.warning("Escribe el nombre del RA.");
       return;
     }
 
     if (isNaN(valor) || valor <= 0) {
-      alert("El valor debe ser mayor que 0.");
+      toast.warning("El valor debe ser mayor que 0.");
       return;
     }
 
@@ -207,9 +208,8 @@ useEffect(() => {
         "Resultado de aprendizaje creado."
       );
     } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "Error al crear RA."
+      toast.error(
+        mensajeError(error, "Error al crear RA.")
       );
     }
   };
@@ -224,23 +224,17 @@ useEffect(() => {
     e.preventDefault();
 
     if (total !== 100) {
-      alert(
-        "Primero debes completar los RA hasta llegar a 100 puntos."
-      );
+      toast.warning("Primero debes completar los RA hasta llegar a 100 puntos.");
       return;
     }
 
     if (!idRA) {
-      alert(
-        "Seleccione un Resultado de Aprendizaje."
-      );
+      toast.warning("Seleccione un Resultado de Aprendizaje.");
       return;
     }
 
     if (!nombreActividad.trim()) {
-      alert(
-        "Escribe el nombre de la actividad."
-      );
+      toast.warning("Escribe el nombre de la actividad.");
       return;
     }
 
@@ -266,9 +260,8 @@ useEffect(() => {
         "Actividad creada correctamente."
       );
     } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "Error al crear actividad."
+      toast.error(
+        mensajeError(error, "Error al crear actividad.")
       );
     }
   };
@@ -1487,15 +1480,6 @@ const publicarRA = async () => {
       </footer>
 
 
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        newestOnTop
-        closeOnClick
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
 
     </div>
   );

@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { toast } from "react-toastify";
+import { mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
 
 interface Estudiante {
   idEstudiante: number;
@@ -44,7 +46,7 @@ const EstudiantesPage = () => {
       setAnios(resAnios.data);
     } catch (error) {
       console.error("Error cargando estudiantes:", error);
-      alert("No se pudieron cargar los estudiantes.");
+      toast.error("No se pudieron cargar los estudiantes.");
     } finally {
       setCargando(false);
     }
@@ -58,7 +60,7 @@ const EstudiantesPage = () => {
     e.preventDefault();
 
     if (!archivo || !idAnioEscolar) {
-      alert("Selecciona un archivo y un año escolar.");
+      toast.warning("Selecciona un archivo y un año escolar.");
       return;
     }
 
@@ -86,10 +88,8 @@ const EstudiantesPage = () => {
     } catch (error: any) {
       console.error("Error importando estudiantes:", error);
 
-      alert(
-        error.response?.data?.mensaje ||
-        error.response?.data ||
-        "Ocurrió un error al importar los estudiantes."
+      toast.error(
+        mensajeError(error, "Ocurrió un error al importar los estudiantes.")
       );
     } finally {
       setCargando(false);
@@ -104,9 +104,8 @@ const EstudiantesPage = () => {
     } catch (error: any) {
       console.error("Error cambiando estado:", error);
 
-      alert(
-        error.response?.data ||
-        "No se pudo cambiar el estado del estudiante."
+      toast.error(
+        mensajeError(error, "No se pudo cambiar el estado del estudiante.")
       );
     }
   };

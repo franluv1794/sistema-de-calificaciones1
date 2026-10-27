@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
+import { confirmar } from "../../Componentes/Notificaciones/Notificaciones";
 
 interface Grado {
   idGrado: number;
@@ -154,9 +155,12 @@ const CursosPage = () => {
 
   const eliminar = async (id: number) => {
     if (
-      !confirm(
-        "¿Seguro que deseas eliminar este curso?"
-      )
+      !(await confirmar({
+        titulo: "Eliminar curso",
+        mensaje: "¿Seguro que deseas eliminar este curso? Esta acción no se puede deshacer.",
+        textoConfirmar: "Sí, eliminar",
+        tipo: "peligro",
+      }))
     ) {
       return;
     }

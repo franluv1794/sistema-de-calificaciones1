@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { toast } from "react-toastify";
+import { mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
 
 interface AnioEscolar {
   idAnioEscolar: number;
@@ -71,7 +73,9 @@ const PeriodosPublicacionPage = () => {
       limpiar();
       cargarDatos();
     } catch (error: any) {
-      alert(error.response?.data ?? "Error al guardar el período.");
+      toast.error(
+        mensajeError(error, "Error al guardar el período.")
+      );
     }
   };
 

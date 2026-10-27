@@ -1,10 +1,23 @@
-import "./ReporteSecundariaAnual3ro.css";
-import logoImage from "../../../imagenes/Captura de pantalla 2026-06-10 122000.png";
+import "./ReporteSecundariaAnual.css";
+import logoImage from "../../imagenes/Captura de pantalla 2026-06-10 122000.png";
+import { filasMaterias, infoGrado, temaGrado } from "../gradoReporte";
 
 interface Props {
   reportes: any[];
-    centro: string;
+  centro: string;
+  grado: string;
 }
+
+// Colores de cada grado (0 = por defecto)
+const paletas: Record<number, Record<string, string>> = {
+  0: { acento: "#008b45", acento2: "#63b34b", acento3: "#63b34b", label: "#b9c9e5", th: "#e4f1dd", area: "#c7e3b6", shaded: "#c7e3b6" },
+  1: { acento: "#008b45", acento2: "#63b34b", acento3: "#63b34b", label: "#b9c9e5", th: "#e4f1dd", area: "#c7e3b6", shaded: "#c7e3b6" },
+  2: { acento: "#1d72b8", acento2: "#2aa7df", acento3: "#2aa7df", label: "#b9c9e5", th: "#b9c9e5", area: "#dce5f3", shaded: "#b9c9e5" },
+  3: { acento: "#d54c0c", acento2: "#f5a11a", acento3: "#f05a28", label: "#f7c7a6", th: "#f7c7a6", area: "#f7c7a6", shaded: "#f5dfcf" },
+  4: { acento: "#c2185b", acento2: "#ec407a", acento3: "#ec407a", label: "#f8c7da", th: "#fbe0ea", area: "#f8c7da", shaded: "#f8c7da" },
+  5: { acento: "#6a1b9a", acento2: "#9c4dcc", acento3: "#9c4dcc", label: "#dcc6ea", th: "#ede0f5", area: "#dcc6ea", shaded: "#dcc6ea" },
+  6: { acento: "#00796b", acento2: "#26a69a", acento3: "#26a69a", label: "#b2dfdb", th: "#e0f2f1", area: "#b2dfdb", shaded: "#b2dfdb" },
+};
 
 const materiasBase = [
   "Lengua Española",
@@ -17,57 +30,54 @@ const materiasBase = [
   "Formación Integral Humana y Religiosa",
 ];
 
-const normalizar = (texto: string) =>
-  texto?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
-const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
+const ReporteSecundariaAnual = ({ reportes, centro, grado }: Props) => {
   if (!reportes || reportes.length === 0) return null;
+
+  const info = infoGrado(grado);
+  const tema = temaGrado(paletas, info.numero);
 
   return (
     <div className="reportes-anuales-secundaria">
       {reportes.map((r, index) => {
         const materias = r.materias ?? r.Materias ?? [];
 
-        const buscarMateria = (nombre: string) =>
-          materias.find((m: any) =>
-            normalizar(m.materia ?? m.Materia ?? "").includes(normalizar(nombre))
-          );
+        const filas = filasMaterias(materiasBase, materias);
 
         return (
-          <div className="reporte-3ro-secundaria" key={r.idEstudiante ?? index}>
-            <div className="r3-header">
-              <div className="r3-logos">
-                <img src={logoImage} alt="Logo institución" className="r3-logo-real" />
+          <div className="reporte-secundaria-anual" key={r.idEstudiante ?? index} style={tema}>
+            <div className="rsa-header">
+              <div className="rsa-logos">
+                <img src={logoImage} alt="Logo institución" className="rsa-logo-real" />
               </div>
 
-              <div className="r3-titulo">
-                <h2>Politécnico María Auxiliadora</h2>
+              <div className="rsa-titulo">
+                <h2>{centro}</h2>
                 <h3>Año Escolar {r.anioEscolar ?? r.AnioEscolar ?? "2025-2026"}</h3>
                 <h3>CALIFICACIONES DE RENDIMIENTO</h3>
               </div>
 
-              <div className="r3-grado">
-                <span className="r3-numero">3</span>
+              <div className="rsa-grado">
+                <span className="rsa-numero">{info.numero || grado}</span>
                 <div>
-                  <span className="r3-er">er</span>
-                  <span className="r3-grado-texto">Grado</span>
-                  <p>PRIMER CICLO</p>
+                  <span className="rsa-er">{info.sufijo}</span>
+                  <span className="rsa-grado-texto">Grado</span>
+                  <p>{info.ciclo}</p>
                   <p>NIVEL SECUNDARIO</p>
                 </div>
               </div>
             </div>
 
-            <div className="r3-nombre-container">
-              <div className="r3-nombre-label">NOMBRES Y APELLIDOS</div>
-              <div className="r3-nombre-linea">
+            <div className="rsa-nombre-container">
+              <div className="rsa-nombre-label">NOMBRES Y APELLIDOS</div>
+              <div className="rsa-nombre-linea">
                 <strong>{r.estudiante ?? r.Estudiante}</strong>
               </div>
             </div>
 
-            <table className="r3-tabla">
+            <table className="rsa-tabla">
               <thead>
                 <tr>
-                  <th rowSpan={4} className="r3-area">
+                  <th rowSpan={4} className="rsa-area">
                     ÁREAS<br />CURRICULARES
                   </th>
                   <th colSpan={5}>CALIFICACIONES DE RENDIMIENTO</th>
@@ -112,8 +122,7 @@ const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
               </thead>
 
               <tbody>
-                {materiasBase.map((nombreMateria) => {
-                  const m = buscarMateria(nombreMateria);
+                {filas.map(({ nombre: nombreMateria, materia: m }) => {
 
                   return (
                     <tr key={nombreMateria}>
@@ -143,7 +152,7 @@ const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
               </tbody>
             </table>
 
-            <div className="r3-firmas">
+            <div className="rsa-firmas">
               <div>
                 <span></span>
                 <p>Maestro/a encargado del curso</p>
@@ -156,12 +165,12 @@ const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
               </div>
             </div>
 
-            <div className="r3-bloque-observacion-competencias">
-              <div className="r3-observaciones">
+            <div className="rsa-bloque-observacion-competencias">
+              <div className="rsa-observaciones">
                 <strong>Observaciones:</strong>
               </div>
 
-              <div className="r3-competencias">
+              <div className="rsa-competencias">
                 <p>PC1 Comunicativa</p>
                 <p>PC2 Pensamiento Lógico, Creativo y Crítico | Resolución de Problema</p>
                 <p>PC3 Científica y Tecnológica | Ambiental y de la Salud</p>
@@ -169,15 +178,15 @@ const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
               </div>
             </div>
 
-            <div className="r3-footer">
-              <div className="r3-situacion">
+            <div className="rsa-footer">
+              <div className="rsa-situacion">
                 <strong>Situación de la Estudiante (Marcar con una X)</strong>
                 <p>□ Promovida</p>
                 <p>□ Promovida con asignatura pendiente</p>
                 <p>□ Repitente</p>
               </div>
 
-              <div className="r3-leyenda">
+              <div className="rsa-leyenda">
                 <strong>Leyenda</strong>
                 <p>
                   PC Promedio Grupo de Competencia | % A.A. Porciento Asistencia Anual |
@@ -189,7 +198,7 @@ const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
               </div>
             </div>
 
-            <div className="r3-creditos">
+            <div className="rsa-creditos">
               Mtra. Kaira Herrera | Coordinadora Pedagógica
             </div>
           </div>
@@ -199,4 +208,4 @@ const ReporteSecundariaAnual3ro = ({ reportes, centro }: Props) => {
   );
 };
 
-export default ReporteSecundariaAnual3ro;
+export default ReporteSecundariaAnual;

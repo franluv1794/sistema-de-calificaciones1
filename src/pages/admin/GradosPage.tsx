@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { confirmar } from "../../Componentes/Notificaciones/Notificaciones";
+import { toast } from "react-toastify";
 
 interface Nivel {
   idNivel: number;
@@ -67,13 +69,18 @@ const GradosPage = () => {
   };
 
   const eliminar = async (id: number) => {
-    if (!confirm("¿Seguro que deseas eliminar este grado?")) return;
+    if (!(await confirmar({
+      titulo: "Eliminar grado",
+      mensaje: "¿Seguro que deseas eliminar este grado? Esta acción no se puede deshacer.",
+      textoConfirmar: "Sí, eliminar",
+      tipo: "peligro",
+    }))) return;
 
     try {
       await api.delete(`/Grados/${id}`);
       cargarDatos();
     } catch {
-      alert("No se pudo eliminar. Puede tener cursos asociados.");
+      toast.error("No se pudo eliminar. Puede tener cursos asociados.");
     }
   };
 

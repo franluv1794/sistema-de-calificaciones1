@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useLocation, useNavigate, useParams } from "react-router-dom";
 import api from "../../api/axiosConfig";
 import "./MaestroReporteDetallePage.css";
-import logoImage from "../../imagenes/Captura de pantalla 2026-06-10 122000.png"
 
 interface Asignacion {
   idAsignacionDocente: number;

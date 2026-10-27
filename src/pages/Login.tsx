@@ -2,8 +2,8 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "../auth/AuthContext";
 import "../Styles/Login.css";
-import logoMireducacion from "../imagenes/Gemini_Generated_Image_vm4u0uvm4u0uvm4u.png";
-import Mirfoto from "../imagenes/mir imagenes.png";
+import logoMireducacion from "../Componentes/imagenes/logo-mir.png";
+import Mirfoto from "../Componentes/imagenes/mir imagenes.png";
 
 const Login = () => {
   const [nombreUsuario, setNombreUsuario] = useState("");

@@ -9,6 +9,7 @@ import {
   GraduationCap,
   BookOpen,
   BookCopy,
+   
   CalendarDays,
   Users,
   UserCheck,
@@ -22,7 +23,7 @@ import {
   type LucideIcon,
 } from "lucide-react";
 
-import logoMireducacion from "../imagenes/Gemini_Generated_Image_vm4u0uvm4u0uvm4u.png";
+
 
 import { useEffect, useState } from "react";
 
@@ -87,6 +88,12 @@ const MENU: MenuSection[] = [
         icon: BookOpen,
         roles: TODOS,
       },
+      {
+  to: "/admin/competencias",
+  label: "Competencias",
+  icon: BookOpen,
+  roles: [ADMIN],
+},
       {
         to: "/admin/grado-materias",
         label: "Grado y materias",
@@ -283,7 +290,7 @@ const AdminLayout = () => {
           <div className="logo-area">
 
             <img
-              src={logoMireducacion}
+             
               alt="MIR Calificaciones"
               className="logo-img"
             />

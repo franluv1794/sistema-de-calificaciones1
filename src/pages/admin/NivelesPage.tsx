@@ -1,5 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { confirmar } from "../../Componentes/Notificaciones/Notificaciones";
+import { toast } from "react-toastify";
 
 interface Nivel {
   idNivel: number;
@@ -48,13 +50,18 @@ const NivelesPage = () => {
   };
 
   const eliminar = async (id: number) => {
-    if (!confirm("¿Seguro que deseas eliminar este nivel?")) return;
+    if (!(await confirmar({
+      titulo: "Eliminar nivel",
+      mensaje: "¿Seguro que deseas eliminar este nivel? Esta acción no se puede deshacer.",
+      textoConfirmar: "Sí, eliminar",
+      tipo: "peligro",
+    }))) return;
 
     try {
       await api.delete(`/Niveles/${id}`);
       cargarNiveles();
     } catch {
-      alert("No se pudo eliminar. Puede tener grados asociados.");
+      toast.error("No se pudo eliminar. Puede tener grados asociados.");
     }
   };
 

@@ -1,1045 +1,685 @@
 import { useEffect, useMemo, useState } from "react";
+
 import api from "../../api/axiosConfig";
-import { toast, ToastContainer } from "react-toastify";
+
+import { toast } from "react-toastify";
+
 import "../../Styles/ModuloCompetenciasSecundaria.css";
+import { confirmar } from "../../Componentes/Notificaciones/Notificaciones";
 
 interface Props {
+
   idAsignacionDocente: number;
+
   idGrado: number;
+
   idMateria: number;
+
   idPeriodo: string;
+
   estudiantes: any[];
+
 }
 
 interface Competencia {
+
   idCompetencia: number;
+
   codigo: string;
+
   nombre: string;
+
 }
 
-interface ActividadCompetencia {
-  idActividadCompetencia: number;
-  idCompetencia: number;
-  competencia: string;
-  nombre: string;
+interface Estudiante {
+
+  idEstudiante: number;
+
+  matricula?: string;
+
+  nombres: string;
+
+  apellidos: string;
+
 }
 
 const ModuloCompetenciasSecundaria = ({
+
   idAsignacionDocente,
-  idGrado,
-  idMateria,
+
   idPeriodo,
-  estudiantes,
+
 }: Props) => {
+
   const [competencias, setCompetencias] = useState<Competencia[]>([]);
-  const [actividades, setActividades] = useState<ActividadCompetencia[]>([]);
-  const [idCompetencia, setIdCompetencia] = useState("");
-  const [nombreActividad, setNombreActividad] = useState("");
+
+  const [listaEstudiantes, setListaEstudiantes] = useState<Estudiante[]>([]);
+
   const [notas, setNotas] = useState<Record<string, string>>({});
-  const [mostrarAyuda, setMostrarAyuda] = useState(false);
 
-  // Solo controla qué competencia se está visualizando.
-  const [competenciaSeleccionada, setCompetenciaSeleccionada] =
-    useState<number | null>(null);
+  const [puedeEditar, setPuedeEditar] = useState(false);
 
-  /* =====================================================
-     CARGAR COMPETENCIAS
-  ===================================================== */
+  const [cargando, setCargando] = useState(false);
 
-  const cargarCompetencias = async () => {
+  const [guardando, setGuardando] = useState(false);
+
+  const [materia, setMateria] = useState("");
+
+  const [periodo, setPeriodo] = useState("");
+
+  const clave = (idEstudiante: number, idCompetencia: number) =>
+
+    `${idEstudiante}-${idCompetencia}`;
+
+  const cargarCaptura = async () => {
+
+    if (!idAsignacionDocente || !idPeriodo) return;
+
+    setCargando(true);
+
     try {
+
       const res = await api.get(
-        `/CompetenciasGradoMateria/grado/${idGrado}/materia/${idMateria}`
+
+        "/CalificacionesCompetenciasPeriodo/captura-directa",
+
+        {
+
+          params: {
+
+            idAsignacionDocente,
+
+            idPeriodoPublicacion: Number(idPeriodo),
+
+          },
+
+        }
+
       );
 
-      const dataNormalizada = res.data.map((c: any) => ({
+      const data = res.data;
+
+      const competenciasApi: Competencia[] = (
+
+        data.competencias ?? data.Competencias ?? []
+
+      ).map((c: any) => ({
+
         idCompetencia: c.idCompetencia ?? c.IdCompetencia,
-        codigo: c.codigo ?? c.Codigo,
-        nombre: c.nombre ?? c.Nombre,
+
+        codigo: c.codigo ?? c.Codigo ?? "",
+
+        nombre: c.nombre ?? c.Nombre ?? "",
+
       }));
 
-      setCompetencias(dataNormalizada);
+      const estudiantesApi: Estudiante[] = (
 
-      // Seleccionar automáticamente la primera competencia
-      if (dataNormalizada.length > 0) {
-        setCompetenciaSeleccionada(
-          dataNormalizada[0].idCompetencia
-        );
-      }
-    } catch (error: any) {
-      console.error(
-        "ERROR COMPETENCIAS:",
-        error.response?.data
+        data.estudiantes ?? data.Estudiantes ?? []
+
+      ).map((e: any) => ({
+
+        idEstudiante: e.idEstudiante ?? e.IdEstudiante,
+
+        matricula: e.matricula ?? e.Matricula ?? "",
+
+        nombres: e.nombres ?? e.Nombres ?? "",
+
+        apellidos: e.apellidos ?? e.Apellidos ?? "",
+
+      }));
+
+      const calificaciones = (
+
+        data.calificaciones ?? data.Calificaciones ?? []
+
       );
 
-      toast.error(
-        "Error al cargar competencias: " +
-          (error.response?.data ?? error.message)
-      );
-    }
-  };
+      const notasIniciales: Record<string, string> = {};
 
-  /* =====================================================
-     CARGAR ACTIVIDADES
-  ===================================================== */
+      calificaciones.forEach((n: any) => {
 
-  const cargarActividades = async () => {
-    if (!idPeriodo) return;
+        const idEstudiante = n.idEstudiante ?? n.IdEstudiante;
 
-    try {
-      const res = await api.get(
-        `/ActividadesCompetencias/asignacion/${idAsignacionDocente}/periodo/${idPeriodo}`
-      );
+        const idCompetencia = n.idCompetencia ?? n.IdCompetencia;
 
-      setActividades(
-        res.data.map((a: any) => ({
-          idActividadCompetencia:
-            a.idActividadCompetencia ??
-            a.IdActividadCompetencia,
+        const nota = n.nota ?? n.Nota ?? n.promedio ?? n.Promedio ?? null;
 
-          idCompetencia:
-            a.idCompetencia ??
-            a.IdCompetencia,
+        notasIniciales[clave(idEstudiante, idCompetencia)] =
 
-          competencia:
-            a.competencia ??
-            a.Competencia,
+          nota == null ? "" : String(nota);
 
-          nombre:
-            a.nombre ??
-            a.Nombre,
-        }))
-      );
-    } catch (error) {
-      console.error(
-        "Error cargando actividades",
-        error
-      );
-
-      toast.error(
-        "Error al cargar actividades."
-      );
-    }
-  };
-
-  /* =====================================================
-     CARGAR NOTAS
-  ===================================================== */
-
-  const cargarNotasGuardadas = async () => {
-    if (!idPeriodo) return;
-
-    try {
-      const res = await api.get(
-        `/NotasCompetencias/asignacion/${idAsignacionDocente}/periodo/${idPeriodo}`
-      );
-
-      const notasCargadas: Record<string, string> = {};
-
-      res.data.forEach((n: any) => {
-        const idActividad =
-          n.idActividadCompetencia ??
-          n.IdActividadCompetencia;
-
-        const idEstudiante =
-          n.idEstudiante ??
-          n.IdEstudiante;
-
-        const nota =
-          n.nota ??
-          n.Nota;
-
-        notasCargadas[
-          `${idActividad}-${idEstudiante}`
-        ] = String(nota);
-
-        toast.info(
-          `Nota cargada para ${
-            estudiantes.find(
-              (e) =>
-                e.idEstudiante === idEstudiante
-            )?.nombre
-          }: ${nota}`
-        );
       });
 
-      setNotas(notasCargadas);
-    } catch (error) {
-      console.error(
-        "Error cargando notas guardadas",
-        error
-      );
+      setCompetencias(competenciasApi);
+
+      setListaEstudiantes(estudiantesApi);
+
+      setNotas(notasIniciales);
+
+      setPuedeEditar(Boolean(data.puedeEditar ?? data.PuedeEditar));
+
+      setMateria(data.materia ?? data.Materia ?? "");
+
+      setPeriodo(data.periodo ?? data.Periodo ?? "");
+
+    } catch (error: any) {
+
+      console.error("Error cargando captura directa de secundaria:", error);
 
       toast.error(
-        "Error al cargar notas guardadas."
+
+        typeof error.response?.data === "string"
+
+          ? error.response.data
+
+          : error.response?.data?.mensaje ??
+
+              "No se pudo cargar la captura directa de competencias."
+
       );
+
+    } finally {
+
+      setCargando(false);
+
     }
+
   };
 
-  /* =====================================================
-     EFECTOS
-  ===================================================== */
-
   useEffect(() => {
-    cargarCompetencias();
-  }, [idGrado, idMateria]);
 
-  useEffect(() => {
-    cargarActividades();
-    cargarNotasGuardadas();
-  }, [idPeriodo, idAsignacionDocente]);
+    void cargarCaptura();
 
-  /* =====================================================
-     CREAR ACTIVIDAD
-  ===================================================== */
+    // Los identificadores determinan la captura que se carga.
 
-  const crearActividad = async (
-    e: React.FormEvent
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+
+  }, [idAsignacionDocente, idPeriodo]);
+
+  const cantidadNotas = useMemo(
+
+    () => Object.values(notas).filter((valor) => valor.trim() !== "").length,
+
+    [notas]
+
+  );
+
+  const cambiarNota = (
+
+    idEstudiante: number,
+
+    idCompetencia: number,
+
+    valor: string
+
   ) => {
-    e.preventDefault();
 
-    if (!idPeriodo) {
-      alert(
-        "Debe seleccionar un período."
+    if (
+
+      valor !== "" &&
+
+      (!/^\d+(\.\d{0,2})?$/.test(valor) ||
+
+        Number(valor) < 0 ||
+
+        Number(valor) > 100)
+
+    ) {
+
+      return;
+
+    }
+
+    setNotas((actuales) => ({
+
+      ...actuales,
+
+      [clave(idEstudiante, idCompetencia)]: valor,
+
+    }));
+
+  };
+
+  const guardarNotas = async () => {
+
+    if (!puedeEditar) {
+
+      toast.warning("Este período no permite editar calificaciones.");
+
+      return;
+
+    }
+
+    if (!competencias.length || !listaEstudiantes.length) {
+
+      toast.warning("No hay estudiantes o competencias para guardar.");
+
+      return;
+
+    }
+
+    const payloadNotas = listaEstudiantes.flatMap((estudiante) =>
+
+      competencias
+
+        .filter(
+
+          (competencia) =>
+
+            (
+
+              notas[
+
+                clave(estudiante.idEstudiante, competencia.idCompetencia)
+
+              ] ?? ""
+
+            ).trim() !== ""
+
+        )
+
+        .map((competencia) => ({
+
+          idEstudiante: estudiante.idEstudiante,
+
+          idCompetencia: competencia.idCompetencia,
+
+          nota: Number(
+
+            notas[clave(estudiante.idEstudiante, competencia.idCompetencia)]
+
+          ),
+
+        }))
+
+    );
+
+    if (!payloadNotas.length) {
+
+      toast.warning("Introduce al menos una nota antes de guardar.");
+
+      return;
+
+    }
+
+    setGuardando(true);
+
+    try {
+
+      await api.put("/CalificacionesCompetenciasPeriodo/guardar-directas", {
+
+        idAsignacionDocente,
+
+        idPeriodoPublicacion: Number(idPeriodo),
+
+        notas: payloadNotas,
+
+      });
+
+      toast.success("Calificaciones de secundaria guardadas correctamente.");
+
+      await cargarCaptura();
+
+    } catch (error: any) {
+
+      console.error("Error guardando calificaciones directas:", error);
+
+      toast.error(
+
+        typeof error.response?.data === "string"
+
+          ? error.response.data
+
+          : error.response?.data?.mensaje ??
+
+              "No se pudieron guardar las calificaciones."
+
       );
+
+    } finally {
+
+      setGuardando(false);
+
+    }
+
+  };
+  const publicarCalificaciones = async () => {
+  if (!puedeEditar) {
+    toast.warning("Este período no permite publicar calificaciones.");
+    return;
+  }
+
+  const confirmado = await confirmar({
+    titulo: "Publicar calificaciones",
+    mensaje: "¿Deseas publicar las calificaciones de este período? Los estudiantes podrán verlas.",
+    textoConfirmar: "Sí, publicar",
+    tipo: "info",
+  });
+
+  if (!confirmado) return;
+
+  try {
+    setGuardando(true);
+
+    await api.put(
+      "/CalificacionesCompetenciasPeriodo/publicar",
+      null,
+      {
+        params: {
+          idAsignacionDocente,
+          idPeriodoPublicacion: Number(idPeriodo),
+        },
+      }
+    );
+
+    toast.success("Calificaciones publicadas correctamente.");
+    await cargarCaptura();
+  } catch (error: any) {
+    toast.error(
+      typeof error.response?.data === "string"
+        ? error.response.data
+        : error.response?.data?.mensaje ||
+          "No se pudieron publicar las calificaciones."
+    );
+  } finally {
+    setGuardando(false);
+  }
+};
+
+  return (
+
+    <div className="modulo-competencias">
+
+
+      <div className="modulo-competencias-header">
+
+        <div>
+
+          <h2>Calificaciones directas por competencias</h2>
+
+          <p>{materia}{periodo ? ` · ${periodo}` : ""}</p>
+
+        </div>
+
+        <button
+
+          type="button"
+
+          onClick={() => void cargarCaptura()}
+
+          disabled={cargando || guardando}
+
+        >
+
+          Actualizar
+
+        </button>
+
+      </div>
+
+      {cargando ? (
+
+        <p>Cargando estudiantes y competencias...</p>
+
+      ) : !competencias.length || !listaEstudiantes.length ? (
+
+        <p>No hay estudiantes o competencias configuradas para esta asignación y período.</p>
+
+      ) : (
+
+        <>
+
+          <div className="captura-directa-info">
+
+            <span>Estudiantes: {listaEstudiantes.length}</span>
+
+            <span>Competencias: {competencias.length}</span>
+
+            <span>Notas introducidas: {cantidadNotas}</span>
+
+            <span>{puedeEditar ? "Edición habilitada" : "Solo lectura"}</span>
+
+          </div>
+
+          <div className="tabla-calificaciones-directas-wrapper">
+
+            <table className="tabla-calificaciones-directas">
+
+              <thead>
+
+                <tr>
+
+                  <th>Estudiante</th>
+
+                  {competencias.map((competencia) => (
+
+                    <th
+
+                      key={competencia.idCompetencia}
+
+                      title={competencia.nombre}
+
+                    >
+
+                      <strong>{competencia.codigo}</strong>
+
+                      <small>{competencia.nombre}</small>
+
+                    </th>
+
+                  ))}
+
+                </tr>
+
+              </thead>
+
+              <tbody>
+
+                {listaEstudiantes.map((estudiante) => (
+
+                  <tr key={estudiante.idEstudiante}>
+
+                    <td>
+
+                      <strong>
+
+                        {estudiante.apellidos}, {estudiante.nombres}
+
+                      </strong>
+
+                      {estudiante.matricula && (
+
+                        <small>{estudiante.matricula}</small>
+
+                      )}
+
+                    </td>
+
+                    {competencias.map((competencia) => {
+
+                      const valor =
+
+                        notas[
+
+                          clave(
+
+                            estudiante.idEstudiante,
+
+                            competencia.idCompetencia
+
+                          )
+
+                        ] ?? "";
+
+                    
+  const publicarCalificaciones = async () => {
+    if (!puedeEditar) {
+      toast.warning("Este período no permite publicar calificaciones.");
       return;
     }
 
-    try {
-      await api.post(
-        "/ActividadesCompetencias",
-        {
-          idAsignacionDocente,
-
-          idPeriodoPublicacion:
-            Number(idPeriodo),
-
-          idCompetencia:
-            Number(idCompetencia),
-
-          nombre:
-            nombreActividad,
-        }
-      );
-
-      setIdCompetencia("");
-      setNombreActividad("");
-
-      await cargarActividades();
-      await cargarNotasGuardadas();
-
-      toast.success(
-        "Actividad creada correctamente."
-      );
-    } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "Error al crear actividad."
-      );
-    }
-  };
-
-  /* =====================================================
-     GUARDAR CALIFICACIONES
-  ===================================================== */
-
-  const guardarCalificaciones = async () => {
-    const notasEnviar: any[] = [];
-
-    for (const actividad of actividades) {
-      for (const est of estudiantes) {
-        const key =
-          `${actividad.idActividadCompetencia}-${est.idEstudiante}`;
-
-        const valor = notas[key];
-
-        if (
-          valor === "" ||
-          valor === undefined
-        ) {
-          continue;
-        }
-
-        const nota = Number(valor);
-
-        if (
-          isNaN(nota) ||
-          nota < 0 ||
-          nota > 100
-        ) {
-          alert(
-            "Todas las notas deben estar entre 0 y 100."
-          );
-          return;
-        }
-
-        notasEnviar.push({
-          idActividadCompetencia:
-            actividad.idActividadCompetencia,
-
-          idEstudiante:
-            est.idEstudiante,
-
-          nota,
-        });
-      }
+    if (!competencias.length || !listaEstudiantes.length) {
+      toast.warning("No hay estudiantes o competencias para publicar.");
+      return;
     }
 
-    try {
-      await api.post(
-        "/NotasCompetencias/guardar-masivo",
-        notasEnviar
-      );
-
-      toast.success(
-        "Calificaciones guardadas correctamente."
-      );
-
-      await cargarNotasGuardadas();
-    } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "Error al guardar calificaciones."
-      );
-
-      toast.error(
-        "Error al guardar calificaciones."
-      );
-    }
-  };
-
-  /* =====================================================
-     CALCULAR
-  ===================================================== */
-
-  const calcular = async () => {
-    try {
-      await api.post(
-        `/CalificacionesCompetenciasPeriodo/calcular?idAsignacionDocente=${idAsignacionDocente}&idPeriodoPublicacion=${idPeriodo}`
-      );
-
-      toast.success(
-        "Calificaciones calculadas."
-      );
-    } catch (error: any) {
-      alert(
-        error.response?.data ??
-          "Error al calcular."
-      );
-
-      toast.error(
-        "Error al calcular."
-      );
-    }
-  };
-
-  /* =====================================================
-     PUBLICAR
-  ===================================================== */
-
-  const publicar = async () => {
-    try {
-      await api.put(
-        `/CalificacionesCompetenciasPeriodo/publicar?idAsignacionDocente=${idAsignacionDocente}&idPeriodoPublicacion=${idPeriodo}`
-      );
-
-      toast.success(
-        "Calificaciones publicadas."
-      );
-    } catch (error: any) {
-      toast.error(
-        "Error al publicar: " +
-          (error.response?.data ??
-            error.message)
-      );
-
-      alert(
-        error.response?.data ??
-          "Error al publicar."
-      );
-    }
-  };
-
-  /* =====================================================
-     COMPETENCIA ACTUAL
-  ===================================================== */
-
-  const competenciaActual =
-    competencias.find(
-      (c) =>
-        c.idCompetencia ===
-        competenciaSeleccionada
+    const payloadNotas = listaEstudiantes.flatMap((estudiante) =>
+      competencias
+        .filter(
+          (competencia) =>
+            (notas[clave(estudiante.idEstudiante, competencia.idCompetencia)] ?? "").trim() !== ""
+        )
+        .map((competencia) => ({
+          idEstudiante: estudiante.idEstudiante,
+          idCompetencia: competencia.idCompetencia,
+          nota: Number(notas[clave(estudiante.idEstudiante, competencia.idCompetencia)]),
+        }))
     );
 
-  /* =====================================================
-     ACTIVIDADES DE LA COMPETENCIA ACTUAL
-  ===================================================== */
+    if (!payloadNotas.length) {
+      toast.warning("Introduce al menos una nota antes de publicar.");
+      return;
+    }
 
-  const actividadesActuales =
-    useMemo(() => {
-      if (!competenciaSeleccionada) {
-        return [];
-      }
+    if (
+      !(await confirmar({
+        titulo: "Guardar y publicar",
+        mensaje: "Se guardarán las notas actuales y se publicarán todas las calificaciones guardadas de esta materia y período. ¿Deseas continuar?",
+        textoConfirmar: "Sí, continuar",
+        tipo: "info",
+      }))
+    ) {
+      return;
+    }
 
-      return actividades.filter(
-        (a) =>
-          a.idCompetencia ===
-          competenciaSeleccionada
+    setGuardando(true);
+    try {
+      // Primero guarda cualquier cambio que todavía esté en pantalla.
+      await api.put("/CalificacionesCompetenciasPeriodo/guardar-directas", {
+        idAsignacionDocente,
+        idPeriodoPublicacion: Number(idPeriodo),
+        notas: payloadNotas,
+      });
+
+      // Después publica las calificaciones guardadas de esta asignación y período.
+      await api.put(
+        "/CalificacionesCompetenciasPeriodo/publicar",
+        null,
+        {
+          params: {
+            idAsignacionDocente,
+            idPeriodoPublicacion: Number(idPeriodo),
+          },
+        }
       );
-    }, [
-      actividades,
-      competenciaSeleccionada,
-    ]);
 
-  /* =====================================================
-     NOTAS REGISTRADAS
-  ===================================================== */
-
-  const notasRegistradas =
-    useMemo(() => {
-      return actividadesActuales.reduce(
-        (total, actividad) => {
-          const cantidad =
-            estudiantes.filter(
-              (est) => {
-                const key =
-                  `${actividad.idActividadCompetencia}-${est.idEstudiante}`;
-
-                return (
-                  notas[key] !== undefined &&
-                  notas[key] !== ""
-                );
-              }
-            ).length;
-
-          return total + cantidad;
-        },
-        0
+      toast.success("Calificaciones publicadas correctamente.");
+      await cargarCaptura();
+    } catch (error: any) {
+      console.error("Error publicando calificaciones:", error);
+      toast.error(
+        typeof error.response?.data === "string"
+          ? error.response.data
+          : error.response?.data?.mensaje ??
+              "No se pudieron publicar las calificaciones."
       );
-    }, [
-      actividadesActuales,
-      estudiantes,
-      notas,
-    ]);
-
-  const totalNotas =
-    actividadesActuales.length *
-    estudiantes.length;
-
-  /* =====================================================
-     RENDER
-  ===================================================== */
+    } finally {
+      setGuardando(false);
+    }
+  };
 
   return (
-    <div className="mc-sec-page">
-
-      {/* =================================================
-          HEADER
-      ================================================= */}
-
-      <header className="mc-sec-header">
-
-        <div>
-          <span className="mc-sec-eyebrow">
-            EVALUACIÓN ACADÉMICA
-          </span>
-
-          <h2>
-            Evaluación por competencias
-          </h2>
-
-          <p>
-            Registra y revisa las calificaciones
-            de tus estudiantes.
-          </p>
-        </div>
-
-        <button
-          type="button"
-          className="mc-sec-help-button"
-          onClick={() =>
-            setMostrarAyuda(true)
-          }
-          title="Ayuda"
-        >
-          ?
-        </button>
-
-      </header>
-
-
-      {/* =================================================
-          COMPETENCIAS
-      ================================================= */}
-
-      <section className="mc-sec-summary">
-
-        <div className="mc-sec-summary-heading">
-
-          <div>
-            <span>
-              PERIODO ACTUAL
-            </span>
-
-            <strong>
-              Evaluación por competencias
-            </strong>
-          </div>
-
-          <div className="mc-sec-summary-period">
 
-            <span>
-              Periodo
-            </span>
+                        <td key={competencia.idCompetencia}>
 
-            <strong>
-              {idPeriodo
-                ? "Seleccionado"
-                : "Sin seleccionar"}
-            </strong>
+                          <input
 
-          </div>
+                            aria-label={`Nota de ${estudiante.nombres} ${estudiante.apellidos} en ${competencia.codigo}`}
 
-        </div>
+                            type="number"
 
+                            min="0"
 
-        <div className="mc-sec-competency-selector">
-
-          {competencias.map(
-            (competencia) => {
-
-              const cantidad =
-                actividades.filter(
-                  (a) =>
-                    a.idCompetencia ===
-                    competencia.idCompetencia
-                ).length;
-
-              const activa =
-                competenciaSeleccionada ===
-                competencia.idCompetencia;
-
-              return (
-                <button
-                  key={
-                    competencia.idCompetencia
-                  }
-                  type="button"
-                  className={`mc-sec-competency-tab ${
-                    activa
-                      ? "active"
-                      : ""
-                  }`}
-                  onClick={() =>
-                    setCompetenciaSeleccionada(
-                      competencia.idCompetencia
-                    )
-                  }
-                >
-
-                  <span className="mc-sec-tab-code">
-                    {competencia.codigo}
-                  </span>
-
-                  <span className="mc-sec-tab-info">
-
-                    <strong>
-                      {competencia.nombre}
-                    </strong>
-
-                    <small>
-                      {cantidad}{" "}
-                      {cantidad === 1
-                        ? "actividad"
-                        : "actividades"}
-                    </small>
-
-                  </span>
+                            max="100"
 
-                  <span className="mc-sec-tab-check">
-                    {cantidad >= 3
-                      ? "✓"
-                      : ""}
-                  </span>
+                            step="0.01"
 
-                </button>
-              );
-            }
-          )}
+                            placeholder="—"
 
-        </div>
+                            value={valor}
 
-      </section>
+                            disabled={!puedeEditar || guardando}
 
+                            onChange={(e) =>
 
-      {/* =================================================
-          NUEVA ACTIVIDAD
-      ================================================= */}
+                              cambiarNota(
 
-      <form
-        onSubmit={crearActividad}
-        className="mc-sec-new-activity"
-      >
+                                estudiante.idEstudiante,
 
-        <div className="mc-sec-new-icon">
-          +
-        </div>
+                                competencia.idCompetencia,
 
-        <div className="mc-sec-new-title">
+                                e.target.value
 
-          <strong>
-            Nueva actividad
-          </strong>
-
-          <span>
-            Añade una actividad a una competencia.
-          </span>
-
-        </div>
-
-
-        <select
-          value={idCompetencia}
-          onChange={(e) =>
-            setIdCompetencia(
-              e.target.value
-            )
-          }
-          required
-        >
-
-          <option value="">
-            Seleccione competencia
-          </option>
-
-          {competencias.map(
-            (c) => (
-              <option
-                key={c.idCompetencia}
-                value={c.idCompetencia}
-              >
-                {c.codigo} - {c.nombre}
-              </option>
-            )
-          )}
-
-        </select>
-
-
-        <input
-          placeholder="Nombre de la actividad"
-          value={nombreActividad}
-          onChange={(e) =>
-            setNombreActividad(
-              e.target.value
-            )
-          }
-          required
-        />
-
-
-        <button
-          type="submit"
-          className="mc-sec-create-button"
-        >
-          Crear
-        </button>
-
-      </form>
-
-
-      {/* =================================================
-          COMPETENCIA ACTUAL
-      ================================================= */}
-
-      {competenciaActual && (
-
-        <section className="mc-sec-grade-section">
-
-          <div className="mc-sec-grade-heading">
-
-            <div>
-
-              <div className="mc-sec-current-code">
-                {competenciaActual.codigo}
-              </div>
-
-              <h3>
-                {competenciaActual.nombre}
-              </h3>
-
-              <p>
-                {actividadesActuales.length}{" "}
-                {actividadesActuales.length === 1
-                  ? "actividad registrada"
-                  : "actividades registradas"}
-              </p>
-
-            </div>
-
-
-            <div className="mc-sec-progress">
-
-              <strong>
-                {notasRegistradas}
-                <span>
-                  / {totalNotas}
-                </span>
-              </strong>
-
-              <small>
-                notas registradas
-              </small>
-
-            </div>
-
-          </div>
-
-
-          {/* =================================================
-              ACTIVIDADES
-          ================================================= */}
-
-          {actividadesActuales.length > 0 ? (
-
-            <>
-
-              <div className="mc-sec-activity-pills">
-
-                {actividadesActuales.map(
-                  (actividad) => (
-                    <div
-                      key={
-                        actividad.idActividadCompetencia
-                      }
-                      className="mc-sec-activity-pill"
-                    >
-
-                      <span></span>
-
-                      {actividad.nombre}
-
-                    </div>
-                  )
-                )}
-
-              </div>
-
-
-              {/* =================================================
-                  TABLA CONSOLIDADA
-              ================================================= */}
-
-              <div className="mc-sec-table-wrapper">
-
-                <table className="mc-sec-grade-table">
-
-                  <thead>
-
-                    <tr>
-
-                      <th className="student-column">
-                        Estudiante
-                      </th>
-
-                      {actividadesActuales.map(
-                        (actividad) => (
-                          <th
-                            key={
-                              actividad.idActividadCompetencia
-                            }
-                          >
-                            {actividad.nombre}
-                          </th>
-                        )
-                      )}
-
-                    </tr>
-
-                  </thead>
-
-
-                  <tbody>
-
-                    {estudiantes.map(
-                      (est) => (
-
-                        <tr
-                          key={
-                            est.idEstudiante
-                          }
-                        >
-
-                          <td className="student-cell">
-
-                            <div className="student-avatar">
-
-                              {(
-                                `${est.nombres ?? ""} ${
-                                  est.apellidos ?? ""
-                                }`
                               )
-                                .trim()
-                                .substring(
-                                  0,
-                                  2
-                                )
-                                .toUpperCase()}
 
-                            </div>
-
-                            <div>
-
-                              <strong>
-                                {est.nombres}{" "}
-                                {est.apellidos}
-                              </strong>
-
-                              <small>
-                                {est.matricula}
-                              </small>
-
-                            </div>
-
-                          </td>
-
-
-                          {actividadesActuales.map(
-                            (actividad) => {
-
-                              const key =
-                                `${actividad.idActividadCompetencia}-${est.idEstudiante}`;
-
-                              const valor =
-                                notas[key] ??
-                                "";
-
-                              return (
-
-                                <td
-                                  key={key}
-                                  className="grade-cell"
-                                >
-
-                                  <input
-                                    type="number"
-                                    min="0"
-                                    max="100"
-                                    value={valor}
-                                    placeholder="—"
-                                    onChange={(e) =>
-                                      setNotas(
-                                        (prev) => ({
-                                          ...prev,
-                                          [key]:
-                                            e.target.value,
-                                        })
-                                      )
-                                    }
-                                  />
-
-                                </td>
-
-                              );
                             }
-                          )}
 
-                        </tr>
-                      )
-                    )}
+                          />
 
-                  </tbody>
+                        </td>
 
-                </table>
+                      );
 
-              </div>
+                    })}
 
-            </>
+                  </tr>
 
-          ) : (
+                ))}
 
-            <div className="mc-sec-empty">
+              </tbody>
 
-              <div className="mc-sec-empty-icon">
-                +
-              </div>
-
-              <strong>
-                Todavía no hay actividades
-              </strong>
-
-              <p>
-                Crea una actividad para comenzar
-                a registrar calificaciones.
-              </p>
-
-            </div>
-
-          )}
-
-        </section>
-
-      )}
-
-
-      {/* =================================================
-          ACCIONES
-      ================================================= */}
-
-      <footer className="mc-sec-actions">
-
-        <div className="mc-sec-save-state">
-
-          <span></span>
-
-          Listo para guardar
-
-        </div>
-
-
-        <div className="mc-sec-action-buttons">
-
-          <button
-            type="button"
-            className="mc-sec-btn secondary"
-            onClick={
-              guardarCalificaciones
-            }
-          >
-            Guardar calificaciones
-          </button>
-
-          <button
-            type="button"
-            className="mc-sec-btn outline"
-            onClick={calcular}
-          >
-            Calcular competencias
-          </button>
-
-          <button
-            type="button"
-            className="mc-sec-btn primary"
-            onClick={publicar}
-          >
-            Publicar competencias
-            <span>→</span>
-          </button>
-
-        </div>
-
-      </footer>
-
-
-      {/* =================================================
-          MODAL AYUDA
-      ================================================= */}
-
-      {mostrarAyuda && (
-
-        <div className="mc-sec-modal-overlay">
-
-          <div className="mc-sec-modal">
-
-            <button
-              type="button"
-              className="mc-sec-modal-close"
-              onClick={() =>
-                setMostrarAyuda(false)
-              }
-            >
-              ×
-            </button>
-
-            <div className="mc-sec-modal-icon">
-              ?
-            </div>
-
-            <span className="mc-sec-eyebrow">
-              GUÍA RÁPIDA
-            </span>
-
-            <h3>
-              ¿Cómo publicar calificaciones?
-            </h3>
-
-            <div className="mc-sec-steps">
-
-              <div>
-                <b>1</b>
-                <span>
-                  Seleccione el período correspondiente.
-                </span>
-              </div>
-
-              <div>
-                <b>2</b>
-                <span>
-                  Cree las actividades de cada competencia.
-                </span>
-              </div>
-
-              <div>
-                <b>3</b>
-                <span>
-                  Registre las notas de los estudiantes.
-                </span>
-              </div>
-
-              <div>
-                <b>4</b>
-                <span>
-                  Presione Guardar calificaciones.
-                </span>
-              </div>
-
-              <div>
-                <b>5</b>
-                <span>
-                  Presione Calcular competencias.
-                </span>
-              </div>
-
-              <div>
-                <b>6</b>
-                <span>
-                  Finalmente presione Publicar competencias.
-                </span>
-              </div>
-
-            </div>
-
-            <button
-              type="button"
-              className="mc-sec-modal-button"
-              onClick={() =>
-                setMostrarAyuda(false)
-              }
-            >
-              Entendido
-            </button>
+            </table>
 
           </div>
 
-        </div>
+          <p className="captura-directa-ayuda">
+
+            Introduce una nota entre 0 y 100 por competencia. Deja en blanco
+
+            las notas que todavía no deseas registrar.
+
+          </p>
+
+          <div className="captura-directa-acciones">
+            <button
+              type="button"
+              
+                 className="btn-publicar-calificaciones"
+              onClick={() => void guardarNotas()}
+              disabled={!puedeEditar || guardando}
+            >
+              {guardando ? "Procesando..." : "Guardar calificaciones"}
+            </button>
+
+            <button
+              type="button"
+               className="btn-publicar-calificaciones"
+              onClick={() => void publicarCalificaciones()}
+              disabled={!puedeEditar || guardando}
+            >
+              {guardando ? "Procesando..." : "Publicar calificaciones"}
+            </button>
+          </div>
+
+        </>
 
       )}
-
-
-      <ToastContainer
-        position="top-right"
-        autoClose={3000}
-        hideProgressBar={false}
-        newestOnTop
-        closeOnClick
-        rtl={false}
-        pauseOnFocusLoss
-        draggable
-        pauseOnHover
-      />
 
     </div>
+
   );
+
 };
 
 export default ModuloCompetenciasSecundaria;

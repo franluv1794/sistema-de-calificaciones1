@@ -5,6 +5,7 @@ import DashboardMaestro from "../pages/maestro/DashboardMaestro";
 import DashboardEstudiante from "../pages/estudiante/DashboardEstudiante";
 import DashboardPadre from "../pages/padre/DashboardPadre";
 import AdminLayout from "../layouts/AdminLayout";
+import MaestroLayout from "../layouts/MaestroLayout";
 import { useAuth } from "../auth/AuthContext";
 
 import NivelesPage from "../pages/admin/NivelesPage";
@@ -25,6 +26,7 @@ import MateriasMaestroPage from "../pages/maestro/MateriasMaestroPage";
 import CoordinadoresAdmin from "../pages/admin/CoordinadoresAdmin";
 import MaestroReportesPage from "../pages/maestro/MaestroReportesPage";
 import MaestroReporteDetallePage from "../pages/maestro/MaestroReporteDetallePage";
+import CompetenciasPage from "../pages/admin/CompetenciasPage";
 
 // Ruta de inicio (dashboard) según el rol del usuario autenticado.
 const homePorRol = (rol?: string) => {
@@ -102,61 +104,34 @@ const AppRoutes = () => {
         <Route path="grado-materias" element={<GradoMateriasPage />} />
         <Route path="anios-escolares" element={<AniosEscolaresPage />} />
         <Route path="maestros" element={<MaestrosPage />} />
+        <Route path="competencias" element={<CompetenciasPage />} />
         <Route path="estudiantes" element={<EstudiantesPage />} />
         <Route path="asignaciones-docentes" element={<AsignacionesDocentesPage />} />
         <Route path="periodos-publicacion" element={<PeriodosPublicacionPage />} />
         <Route path="padres" element={<PadresPage />} />
         <Route path="reportes" element={<ReportesPage />} />
-        <Route
-
-/>
-        <Route
-  path="/admin/coordinadores"
-  element={<CoordinadoresAdmin />}
-/>
+        <Route/>
+        
+        <Route path="/admin/coordinadores" element={<CoordinadoresAdmin />} />
       </Route>
 
       <Route
-        path="/maestro/dashboard"
+        path="/maestro"
         element={
           <ProtectedRoute roles={["Maestro"]}>
-            <DashboardMaestro />
+            <MaestroLayout />
           </ProtectedRoute>
         }
-      />
-
-      <Route
-        path="/maestro/asignacion/:id"
-        element={
-          <ProtectedRoute roles={["Maestro"]}>
-            <AsignacionMaestroPage />
-          </ProtectedRoute>
-        }
-      />
-
-      <Route
-        path="/maestro/materias"
-        element={
-          <ProtectedRoute roles={["Maestro"]}>
-            <MateriasMaestroPage />
-          </ProtectedRoute>
-        }
-
-        
-      />
-<Route
-  path="/maestro/reportes"
-  element={
-    <ProtectedRoute roles={["Maestro"]}>
-      <MaestroReportesPage />
-    </ProtectedRoute>
-  }
-/>
- 
- <Route
-  path="/maestro/reportes/detalle/:idAsignacionDocente/:idCurso"
-  element={<MaestroReporteDetallePage />}
-/>
+      >
+        <Route path="dashboard" element={<DashboardMaestro />} />
+        <Route path="materias" element={<MateriasMaestroPage />} />
+        <Route path="asignacion/:id" element={<AsignacionMaestroPage />} />
+        <Route path="reportes" element={<MaestroReportesPage />} />
+        <Route
+          path="reportes/detalle/:idAsignacionDocente/:idCurso"
+          element={<MaestroReporteDetallePage />}
+        />
+      </Route>
 
       <Route
         path="/estudiante/dashboard"

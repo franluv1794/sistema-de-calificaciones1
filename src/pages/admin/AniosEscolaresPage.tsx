@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
+import { confirmar, mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
   
 interface AnioEscolar {
   idAnioEscolar: number;
@@ -18,8 +19,12 @@ const AniosEscolaresPage = () => {
   const [fechaFin, setFechaFin] = useState("");
 
   const cargarAnios = async () => {
-    const res = await api.get("/AniosEscolares");
-    setAnios(res.data);
+    try {
+      const res = await api.get("/AniosEscolares");
+      setAnios(res.data);
+    } catch (error) {
+      toast.error(mensajeError(error, "No se pudieron cargar los años escolares."));
+    }
   };
 
   useEffect(() => {
@@ -29,28 +34,48 @@ const AniosEscolaresPage = () => {
   const guardar = async (e: React.FormEvent) => {
     e.preventDefault();
 
-    await api.post("/AniosEscolares", {
-      nombre,
-      fechaInicio,
-      fechaFin,
-    });
+    try {
+      await api.post("/AniosEscolares", {
+        nombre,
+        fechaInicio,
+        fechaFin,
+      });
 
-    setNombre("");
-    setFechaInicio("");
-    setFechaFin("");
-    cargarAnios();
+      toast.success("Año escolar creado correctamente.");
+      setNombre("");
+      setFechaInicio("");
+      setFechaFin("");
+      cargarAnios();
+    } catch (error) {
+      toast.error(mensajeError(error, "No se pudo crear el año escolar."));
+    }
   };
 
   const activar = async (id: number) => {
-    await api.put(`/AniosEscolares/${id}/activar`);
-    cargarAnios();
+    try {
+      await api.put(`/AniosEscolares/${id}/activar`);
+      toast.success("Año escolar activado.");
+      cargarAnios();
+    } catch (error) {
+      toast.error(mensajeError(error, "No se pudo activar el año escolar."));
+    }
   };
 
   const cerrar = async (id: number) => {
-    if (!confirm("¿Seguro que deseas cerrar este año escolar?")) return;
+    if (!(await confirmar({
+      titulo: "Cerrar año escolar",
+      mensaje: "¿Seguro que deseas cerrar este año escolar? Esta acción afectará los períodos y calificaciones asociados.",
+      textoConfirmar: "Sí, cerrar",
+      tipo: "advertencia",
+    }))) return;
 
-    await api.put(`/AniosEscolares/${id}/cerrar`);
-    cargarAnios();
+    try {
+      await api.put(`/AniosEscolares/${id}/cerrar`);
+      toast.success("Año escolar cerrado.");
+      cargarAnios();
+    } catch (error) {
+      toast.error(mensajeError(error, "No se pudo cerrar el año escolar."));
+    }
   };
 
   return (

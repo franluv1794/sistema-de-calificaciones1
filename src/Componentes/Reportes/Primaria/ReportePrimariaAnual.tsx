@@ -1,12 +1,23 @@
-import "./ReportePrimariaAnual6to.css";
-
-import logoImage from "../../../imagenes/Captura de pantalla 2026-06-10 122000.png";
-import ReportePrimariaAnual4to from "./ReportePrimariaAnual4to";
+import "./ReportePrimariaAnual.css";
+import logoImage from "../../imagenes/Captura de pantalla 2026-06-10 122000.png";
+import { filasMaterias, infoGrado, temaGrado } from "../gradoReporte";
 
 interface Props {
   reportes: any[];
-    centro: string;
+  centro: string;
+  grado: string;
 }
+
+// Colores de cada grado (0 = por defecto)
+const paletas: Record<number, Record<string, string>> = {
+  0: { acento: "#ec3b91", barra: "#ec7faf", suave: "#f8c7da" },
+  1: { acento: "#1d72b8", barra: "#2aa7df", suave: "#cfe6f7" },
+  2: { acento: "#008b45", barra: "#63b34b", suave: "#d7ecd0" },
+  3: { acento: "#d54c0c", barra: "#f05a28", suave: "#f7c7a6" },
+  4: { acento: "#ec3b91", barra: "#ec7faf", suave: "#f8c7da" },
+  5: { acento: "#9f9338", barra: "#9f9338", suave: "#fff3bf" },
+  6: { acento: "#9f9338", barra: "#9f9338", suave: "#fff3bf" },
+};
 
 const materiasBase = [
   "Lengua Española",
@@ -19,24 +30,21 @@ const materiasBase = [
   "Educación Artística",
 ];
 
-const normalizar = (texto: string) =>
-  texto?.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-
 const valor = (obj: any, prop: string) =>
   obj?.[prop] ?? obj?.[prop.toUpperCase()] ?? "";
 
-const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
+const ReportePrimariaAnual = ({ reportes, centro, grado }: Props) => {
   if (!reportes || reportes.length === 0) return null;
+
+  const info = infoGrado(grado);
+  const tema = temaGrado(paletas, info.numero);
 
   return (
     <div className="reportes-primaria-anual">
       {reportes.map((r, index) => {
         const materias = r.materias ?? r.Materias ?? [];
 
-        const buscarMateria = (nombre: string) =>
-          materias.find((m: any) =>
-            normalizar(m.materia ?? m.Materia ?? "").includes(normalizar(nombre))
-          );
+        const filas = filasMaterias(materiasBase, materias);
 
         const celdaPeriodo = (m: any, comp: string, periodo: string) => {
           const c = m?.[comp] ?? m?.[comp.toUpperCase()];
@@ -49,35 +57,35 @@ const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
         };
 
         return (
-          <div className="reporte-6to-primaria" key={r.idEstudiante ?? index}>
-            <div className="p6-header">
-              <div className="p6-logos">
-                <img src={logoImage} alt="Logo institución" className="p6-logo" />
+          <div className="reporte-primaria-anual" key={r.idEstudiante ?? index} style={tema}>
+            <div className="rpa-header">
+              <div className="rpa-logos">
+                <img src={logoImage} alt="Logo institución" className="rpa-logo" />
               </div>
 
-              <div className="p6-titulo">
-                  <h2>{centro}</h2>
+              <div className="rpa-titulo">
+                <h2>{centro}</h2>
                 <h3>Año Escolar {r.anioEscolar ?? r.AnioEscolar ?? "2025-2026"}</h3>
                 <h3>CALIFICACIONES DE RENDIMIENTO</h3>
               </div>
 
-              <div className="p6-grado">
-                <div className="p6-icono">✿</div>
-                <h2>SEXTO GRADO</h2>
+              <div className="rpa-grado">
+                <div className="rpa-icono">✿</div>
+                <h2>{info.nombre}</h2>
                 <h3>NIVEL PRIMARIO</h3>
               </div>
             </div>
 
-            <div className="p6-nombre-container">
-              <div className="p6-nombre-label">NOMBRES Y APELLIDOS</div>
-              <div className="p6-nombre-linea">
+            <div className="rpa-nombre-container">
+              <div className="rpa-nombre-label">NOMBRES Y APELLIDOS</div>
+              <div className="rpa-nombre-linea">
                 <strong>{r.estudiante ?? r.Estudiante}</strong>
               </div>
             </div>
 
-            <div className="p6-barra">DESEMPEÑO INDIVIDUAL DEL/LA ESTUDIANTE</div>
+            <div className="rpa-barra">DESEMPEÑO INDIVIDUAL DEL/LA ESTUDIANTE</div>
 
-            <table className="p6-tabla">
+            <table className="rpa-tabla">
               <thead>
                 <tr>
                   <th colSpan={2}>COMPETENCIAS<br />FUNDAMENTALES</th>
@@ -110,18 +118,17 @@ const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
               </thead>
 
               <tbody>
-                {materiasBase.map((nombreMateria, i) => {
-                  const m = buscarMateria(nombreMateria);
+                {filas.map(({ nombre: nombreMateria, materia: m }, i) => {
 
                   return (
                     <tr key={nombreMateria}>
                       {i === 0 && (
-                        <td rowSpan={materiasBase.length} className="p6-area-vertical">
+                        <td rowSpan={filas.length} className="rpa-area-vertical">
                           ÁREAS CURRICULARES
                         </td>
                       )}
 
-                      <td className="p6-materia">{nombreMateria}</td>
+                      <td className="rpa-materia">{nombreMateria}</td>
 
                       {["c1", "c2", "c3"].map((comp) =>
                         ["p1", "rp1", "p2", "rp2", "p3", "rp3", "p4", "rp4"].map((p) => (
@@ -142,24 +149,24 @@ const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
               </tbody>
             </table>
 
-            <table className="p6-observaciones">
+            <table className="rpa-observaciones">
               <tbody>
                 {["P1", "P2", "P3", "P4"].map((p, i) => (
                   <tr key={p}>
                     {i === 0 && (
-                      <td rowSpan={4} className="p6-observaciones-title">
+                      <td rowSpan={4} className="rpa-observaciones-title">
                         OBSERVACIONES
                       </td>
                     )}
-                    <td className="p6-periodo-label">{p}</td>
+                    <td className="rpa-periodo-label">{p}</td>
                     <td></td>
                   </tr>
                 ))}
               </tbody>
             </table>
 
-            <div className="p6-footer">
-              <table className="p6-asistencia">
+            <div className="rpa-footer">
+              <table className="rpa-asistencia">
                 <thead>
                   <tr>
                     <th colSpan={5}>Resumen de asistencia del/la estudiante</th>
@@ -185,7 +192,7 @@ const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
                 </tbody>
               </table>
 
-              <div className="p6-leyenda">
+              <div className="rpa-leyenda">
                 <strong>Leyenda:</strong>
                 <p>(P1) Período 1</p>
                 <p>(P2) Período 2</p>
@@ -202,7 +209,7 @@ const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
                 <p>(C3) Competencia 3</p>
               </div>
 
-              <table className="p6-escala">
+              <table className="rpa-escala">
                 <thead>
                   <tr>
                     <th>Escala numérica</th>
@@ -236,4 +243,4 @@ const ReportePrimariaAnual6to = ({ reportes,centro }: Props) => {
   );
 };
 
-export default ReportePrimariaAnual6to;
+export default ReportePrimariaAnual;

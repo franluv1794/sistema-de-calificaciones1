@@ -3,9 +3,7 @@ import api from "../../api/axiosConfig";
 import { useAuth } from "../../auth/AuthContext";
 import { useNavigate } from "react-router-dom";
 import "../../Styles/DashboardMaestro.css";
-import "../maestro/MaestroReportesPage"
 
-import miLogo from "../../imagenes/Gemini_Generated_Image_vm4u0uvm4u0uvm4u.png";
 
 interface Asignacion {
   idAsignacionDocente: number;
@@ -19,7 +17,7 @@ interface Asignacion {
 const DashboardMaestro = () => {
   const [asignaciones, setAsignaciones] = useState<Asignacion[]>([]);
 
-  const { logout, user } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -30,11 +28,6 @@ const DashboardMaestro = () => {
         console.error("DATA:", err.response?.data);
       });
   }, []);
-
-  const cerrarSesion = () => {
-    logout();
-    navigate("/");
-  };
 
   const anioAcademico =
     asignaciones.length > 0
@@ -52,119 +45,7 @@ const DashboardMaestro = () => {
   const nombreMaestro = user?.nombreUsuario ?? "Maestro";
 
   return (
-    <div className="maestro-layout">
-
-      {/* ================= SIDEBAR ================= */}
-      <aside className="maestro-sidebar">
-
-        <div className="sidebar-brand">
-          <div className="brand-logo">
-            <img src={miLogo} alt="Logo" />
-          </div>
-
-          <div className="brand-name">
-            <span>Calificaciones</span>
-            <strong></strong>
-          </div>
-        </div>
-
-       
-  
-
-        {/* PERFIL */}
-        <div className="sidebar-profile">
-          <div className="profile-avatar">
-            {nombreMaestro.substring(0, 2).toUpperCase()}
-          </div>
-
-          <div className="profile-info">
-            <strong>{nombreMaestro}</strong>
-            <span>Docente</span>
-          </div>
-
-          <button className="profile-more">•••</button>
-        </div>
-
-        {/* NAVEGACIÓN */}
-        <nav className="sidebar-nav">
-
-          <span className="nav-section-title">
-            ESPACIO DE TRABAJO
-          </span>
-
-          <button className="nav-item active">
-            <span className="nav-icon">⌂</span>
-            <span>Inicio</span>
-          </button>
-
-          <button
-            className="nav-item"
-            onClick={() => navigate("/maestro/materias")}
-          >
-            <span className="nav-icon">▣</span>
-            <span>Materias</span>
-
-            {asignaciones.length > 0 && (
-              <span className="nav-badge">
-                {asignaciones.length}
-              </span>
-            )}
-          </button>
-
-          <span className="nav-section-title gestion-title">
-            GESTIÓN
-          </span>
-
-          <button
-            className="nav-item"
-           onClick={() => navigate("/maestro/reportes")}
-           
-          >
-
-          
-            <span className="nav-icon">▤</span>
-            <span>Reportes</span>
-          </button>
-
-          <button
-            className="nav-item"
-            onClick={() => navigate("/cambiar-password")}
-          >
-            <span className="nav-icon">⚙</span>
-            <span>Configuración</span>
-          </button>
-
-
-        </nav>
-
-        {/* AYUDA */}
-        <div className="sidebar-help">
-          <div className="help-circle">?</div>
-
-          <div className="help-content">
-            <strong>¿Necesitas ayuda?</strong>
-            <span>Consulta la guía docente</span>
-            <button>Ver guía →</button>
-          </div>
-        </div>
-
-        {/* FOOTER */}
-        <div className="sidebar-footer">
-          <span>© 2026 Fundacion MIR. Todos los derechos reservados.</span>
-
-          <button
-            onClick={cerrarSesion}
-            title="Cerrar sesión"
-            className="logout-button"
-          >
-            ↪
-          </button>
-        </div>
-
-      </aside>
-
-      {/* ================= CONTENIDO ================= */}
-      <main className="maestro-main">
+    <>
 
         {/* TOPBAR */}
         <header className="maestro-topbar">
@@ -408,9 +289,7 @@ const DashboardMaestro = () => {
 
         </div>
 
-      </main>
-
-    </div>
+      </>
   );
 };
 

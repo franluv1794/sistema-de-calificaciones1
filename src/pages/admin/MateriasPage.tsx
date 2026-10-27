@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
+import { confirmar } from "../../Componentes/Notificaciones/Notificaciones";
 
 interface Materia {
   idMateria: number;
@@ -65,7 +66,12 @@ const MateriasPage = () => {
   };
 
   const eliminar = async (id: number) => {
-    if (!confirm("¿Seguro que deseas eliminar esta materia?")) return;
+    if (!(await confirmar({
+      titulo: "Eliminar materia",
+      mensaje: "¿Seguro que deseas eliminar esta materia? Esta acción no se puede deshacer.",
+      textoConfirmar: "Sí, eliminar",
+      tipo: "peligro",
+    }))) return;
 
     try {
       await api.delete(`/Materias/${id}`);

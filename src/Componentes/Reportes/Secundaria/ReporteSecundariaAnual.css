@@ -1,15 +1,10 @@
-/* ReporteSecundariaAnual3ro Styles */
-
-@page {
-  size: letter landscape;
-  margin: 6mm;
-}
+/* ReporteSecundariaAnual Styles */
 
 .reportes-anuales-secundaria {
   background: white;
 }
 
-.reporte-2do-secundaria {
+.reporte-secundaria-anual {
   width: 1050px;
   min-height: 760px;
   background: white;
@@ -20,85 +15,85 @@
   page-break-after: always;
 }
 
-.r4-header {
+.rsa-header {
   display: grid;
   grid-template-columns: 220px 1fr 230px;
   align-items: start;
   margin-bottom: 5px;
 }
 
-.r4-logos {
+.rsa-logos {
   display: flex;
   align-items: center;
 }
 
-.r4-logo-real {
+.rsa-logo-real {
   width: 170px;
   height: 70px;
   object-fit: contain;
 }
 
-.r4-titulo {
+.rsa-titulo {
   text-align: center;
   line-height: 1.1;
 }
 
-.r4-titulo h2,
-.r4-titulo h3 {
+.rsa-titulo h2,
+.rsa-titulo h3 {
   margin: 3px 0;
 }
 
-.r4-grado {
+.rsa-grado {
   display: flex;
   justify-content: flex-end;
   align-items: center;
-  color: #1d72b8;;
+  color: var(--acento);
   line-height: 0.9;
 }
 
-.r4-numero {
+.rsa-numero {
   font-size: 110px;
   font-weight: 900;
 }
 
-.r4-er {
+.rsa-er {
   font-size: 28px;
   font-weight: bold;
   vertical-align: top;
 }
 
-.r4-grado-texto {
+.rsa-grado-texto {
   display: block;
   font-size: 40px;
   font-weight: 900;
-  color: #2aa7df;
+  color: var(--acento2);
 }
 
-.r4-grado p {
+.rsa-grado p {
   margin: 0;
   text-align: center;
   font-size: 14px;
-  color: #2aa7df;
+  color: var(--acento3);
   font-weight: bold;
-}   
+}
 
-.r4-nombre-container {
+.rsa-nombre-container {
   display: flex;
   align-items: end;
   margin-top: 8px;
   margin-bottom: 4px;
 }
 
-.r4-nombre-label {
+.rsa-nombre-label {
   width: 220px;
   border-top: 5px solid #555;
-  background: #b9c9e5;
+  background: var(--label);
   text-align: center;
   font-weight: bold;
   padding: 8px;
 }
 
-.r4-nombre-linea {
+.rsa-nombre-linea {
   flex: 1;
   border-bottom: 1px solid #222;
   margin-left: 10px;
@@ -107,49 +102,49 @@
   font-size: 14px;
 }
 
-.r4-tabla {
+.rsa-tabla {
   width: 100%;
   border-collapse: collapse;
   margin-top: 5px;
   font-size: 11px;
 }
 
-.r4-tabla th,
-.r4-tabla td {
+.rsa-tabla th,
+.rsa-tabla td {
   border: 1px solid #222;
   padding: 5px;
   text-align: center;
 }
 
-.r4-tabla th {
-  background: #b9c9e5;
+.rsa-tabla th {
+  background: var(--th);
   font-weight: bold;
 }
 
-.r4-tabla .r4-area,
-.r4-tabla .materia-nombre {
-  background:  #dce5f3;
+.rsa-tabla .rsa-area,
+.rsa-tabla .materia-nombre {
+  background: var(--area);
 
   font-weight: bold;
 }
 
-.r4-tabla .materia-nombre {
+.rsa-tabla .materia-nombre {
   text-align: center;
   width: 150px;
 }
 
-.r4-tabla .vertical {
+.rsa-tabla .vertical {
   writing-mode: vertical-rl;
   transform: rotate(180deg);
   min-width: 32px;
   height: 95px;
 }
 
-.r4-tabla .shaded {
-  background: #b9c9e5;
+.rsa-tabla .shaded {
+  background: var(--shaded);
 }
 
-.r4-firmas {
+.rsa-firmas {
   display: grid;
   grid-template-columns: 1fr 1fr;
   gap: 300px;
@@ -158,31 +153,31 @@
   font-size: 13px;
 }
 
-.r4-firmas span {
+.rsa-firmas span {
   display: block;
   border-top: 1px solid black;
   margin-bottom: 3px;
 }
 
-.r4-firmas p {
+.rsa-firmas p {
   margin: 0;
 }
 
-.r4-bloque-observacion-competencias {
+.rsa-bloque-observacion-competencias {
   display: grid;
   grid-template-columns: 1.4fr 1fr;
   gap: 5px;
   margin-top: 8px;
 }
 
-.r4-observaciones {
+.rsa-observaciones {
   border: 1px solid #222;
   height: 48px;
   padding: 8px;
   margin-bottom: 0;
 }
 
-.r4-competencias {
+.rsa-competencias {
   border: 1px solid #222;
   padding: 6px;
   font-size: 10px;
@@ -190,40 +185,40 @@
   margin: 0;
 }
 
-.r4-competencias p {
+.rsa-competencias p {
   margin: 2px 0;
 }
 
-.r4-footer {
+.rsa-footer {
   display: grid;
   grid-template-columns: 1fr 1.45fr;
   gap: 5px;
   margin-top: 5px;
 }
 
-.r4-situacion,
-.r4-leyenda {
+.rsa-situacion,
+.rsa-leyenda {
   border: 1px solid #222;
   padding: 7px;
   font-size: 11px;
 }
 
-.r4-situacion p {
+.rsa-situacion p {
   margin: 3px 0 0 35px;
 }
 
-.r4-leyenda strong {
+.rsa-leyenda strong {
   display: block;
   text-align: center;
   font-size: 14px;
 }
 
-.r4-leyenda p {
+.rsa-leyenda p {
   margin: 5px 0 0 0;
   line-height: 1.3;
 }
 
-.r4-creditos {
+.rsa-creditos {
   text-align: right;
   color: #bbb;
   font-size: 11px;
@@ -247,7 +242,7 @@
     display: none !important;
   }
 
-  .reporte-2do-secundaria {
+  .reporte-secundaria-anual {
     width: 100%;
     min-height: auto;
     margin: 0;
