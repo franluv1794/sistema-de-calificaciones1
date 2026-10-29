@@ -11,6 +11,7 @@ interface AuthContextType {
   user: UserData | null;
   login: (nombreUsuario: string, password: string) => Promise<void>;
   logout: () => void;
+  marcarPasswordCambiada: () => void;
   isAuthenticated: boolean;
 }
 
@@ -52,12 +53,24 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setUser(null);
   };
 
+  // Tras cambiar la contraseña temporal, el usuario ya puede usar el sistema
+  const marcarPasswordCambiada = () => {
+    setUser((actual) => {
+      if (!actual) return actual;
+
+      const actualizado = { ...actual, debeCambiarPassword: false };
+      localStorage.setItem("user", JSON.stringify(actualizado));
+      return actualizado;
+    });
+  };
+
   return (
     <AuthContext.Provider
       value={{
         user,
         login,
         logout,
+        marcarPasswordCambiada,
         isAuthenticated: !!user,
       }}
     >

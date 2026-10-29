@@ -94,6 +94,7 @@ const CoordinadoresAdmin = () => {
       setCentros(res.data);
     } catch (error) {
       console.error("Error cargando centros:", error);
+      toast.error("No se pudieron cargar los centros educativos.");
     }
   };
 
@@ -108,6 +109,7 @@ const CoordinadoresAdmin = () => {
       setRoles(rolesCoordinacion);
     } catch (error) {
       console.error("Error cargando roles:", error);
+      toast.error("No se pudieron cargar los roles de coordinación.");
     }
   };
 
@@ -156,21 +158,6 @@ const CoordinadoresAdmin = () => {
     filtroCentro,
     filtroRol,
   ]);
-
-  const rolesCoordinacion = [
-  {
-    idRol: 5,
-    nombre: "CoordinadorPrimaria",
-  },
-  {
-    idRol: 6,
-    nombre: "CoordinadorSecundaria",
-  },
-  {
-    idRol: 7,
-    nombre: "CoordinadorPolitecnico",
-  },
-];
 
   const rolesDisponibles = useMemo(() => {
   return Array.from(
@@ -839,7 +826,7 @@ const centrosDisponibles = useMemo(() => {
       Seleccione un rol
     </option>
 
-    {rolesCoordinacion.map((rol) => (
+    {roles.map((rol) => (
       <option
         key={rol.idRol}
         value={String(rol.idRol)}
@@ -851,10 +838,6 @@ const centrosDisponibles = useMemo(() => {
       </option>
     ))}
   </select>
-
-  <small>
-    Valor actual: {formulario.idRol}
-  </small>
 </label>
 
           
@@ -875,14 +858,16 @@ const centrosDisponibles = useMemo(() => {
       Seleccione un centro
     </option>
 
-    {centrosDisponibles.map((centro) => (
-      <option
-        key={centro.id}
-        value={centro.id}
-      >
-        {centro.nombre}
-      </option>
-    ))}
+    {centros
+      .filter((centro) => centro.estado)
+      .map((centro) => (
+        <option
+          key={centro.id}
+          value={centro.id}
+        >
+          {centro.nombre}
+        </option>
+      ))}
   </select>
 </label>
               

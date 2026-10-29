@@ -1,0 +1,124 @@
+/* =========================
+   BARRA DE FILTROS DE BÚSQUEDA
+========================= */
+
+.filtros-busqueda {
+  margin: 20px 0 14px;
+  padding: 16px 18px;
+  border: 1px solid #e4eaf1;
+  border-radius: 14px;
+  background: #ffffff;
+  box-shadow: 0 4px 14px rgba(12, 32, 52, 0.04);
+}
+
+.filtros-fila {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: 12px;
+}
+
+.filtros-buscador {
+  flex: 1 1 260px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  min-height: 42px;
+  padding: 0 12px;
+  border: 1px solid #d7e0ea;
+  border-radius: 10px;
+  background: #f8fafc;
+  color: #71839a;
+}
+
+.filtros-buscador:focus-within {
+  border-color: #0b239c;
+  background: #ffffff;
+  box-shadow: 0 0 0 3px rgba(11, 35, 156, 0.1);
+}
+
+.filtros-buscador input {
+  flex: 1;
+  min-width: 0;
+  border: none;
+  outline: none;
+  background: transparent;
+  font: inherit;
+  font-size: 14px;
+  color: #102a43;
+}
+
+.filtros-select {
+  flex: 0 1 180px;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  min-width: 140px;
+}
+
+.filtros-select span {
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 0.4px;
+  text-transform: uppercase;
+  color: #71839a;
+}
+
+.filtros-select select {
+  min-height: 42px;
+  padding: 0 10px;
+  border: 1px solid #d7e0ea;
+  border-radius: 10px;
+  background: #ffffff;
+  font: inherit;
+  font-size: 14px;
+  color: #102a43;
+  cursor: pointer;
+}
+
+.filtros-select select:focus {
+  outline: none;
+  border-color: #0b239c;
+  box-shadow: 0 0 0 3px rgba(11, 35, 156, 0.1);
+}
+
+.filtros-resumen {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 12px;
+  font-size: 13px;
+  color: #71839a;
+}
+
+.filtros-resumen strong {
+  color: #102a43;
+}
+
+.filtros-limpiar {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 10px;
+  border: none;
+  border-radius: 8px;
+  background: #f0f4ff;
+  color: #0b239c;
+  font: inherit;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.filtros-limpiar:hover {
+  background: #e3eaff;
+}
+
+@media (max-width: 600px) {
+  .filtros-select {
+    flex: 1 1 calc(50% - 6px);
+    min-width: 0;
+  }
+}

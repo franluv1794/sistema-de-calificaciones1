@@ -22,14 +22,12 @@ const Login = () => {
 
       const user = JSON.parse(localStorage.getItem("user") || "{}");
 
-      console.log("USUARIO LOGIN:", user);
-      console.log("ROL:", user.rol);
-      console.log("ROLE:", user.role);
-      console.log("NOMBRE:", user.nombre);
-
       const rol = user.rol ?? user.role ?? user.nombre;
 
-      if (
+      // Con contraseña temporal, primero debe cambiarla
+      if (user.debeCambiarPassword) {
+        navigate("/cambiar-password", { replace: true });
+      } else if (
         rol === "Administrador" ||
         rol === "CoordinadorPrimaria" ||
         rol === "CoordinadorSecundaria" ||
@@ -43,7 +41,6 @@ const Login = () => {
       } else if (rol === "Padre") {
         navigate("/padre/dashboard");
       } else {
-        console.log("ROL NO RECONOCIDO:", rol);
         navigate("/");
       }
     } catch {

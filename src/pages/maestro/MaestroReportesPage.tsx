@@ -25,16 +25,6 @@ const MaestroReportesPage = () => {
       try {
         const res = await api.get("/PanelMaestro/mis-asignaciones");
 
-       console.log(
-  "ASIGNACIONES DEL MAESTRO:",
-  JSON.stringify(res.data, null, 2)
-);
-
-console.log(
-  "PRIMERA ASIGNACIÓN:",
-  res.data?.[0]
-);
-
         setAsignaciones(res.data);
       } catch (error: any) {
         console.error(

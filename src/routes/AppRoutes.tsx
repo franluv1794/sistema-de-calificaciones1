@@ -59,6 +59,11 @@ const ProtectedRoute = ({
   // Sin sesión: al login.
   if (!isAuthenticated) return <Navigate to="/" replace />;
 
+  // Con contraseña temporal no puede entrar a ninguna sección hasta cambiarla.
+  if (user?.debeCambiarPassword) {
+    return <Navigate to="/cambiar-password" replace />;
+  }
+
   // Con sesión pero sin permiso para esta sección: lo enviamos a SU panel,
   // evitando el acceso escribiendo la URL manualmente.
   if (!user?.rol || !roles.includes(user.rol)) {
