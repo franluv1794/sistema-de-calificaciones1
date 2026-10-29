@@ -1,7 +1,7 @@
 import axios from "axios";
 
 const api = axios.create({
-  baseURL: "https://mircalificacione-001-site1.ltempurl.com",
+ baseURL: "https://mircalificacione-001-site1.ltempurl.com/api",
 });
 
 api.interceptors.request.use((config) => {
