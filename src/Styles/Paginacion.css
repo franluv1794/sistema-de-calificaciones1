@@ -1,0 +1,79 @@
+/* =========================
+   PAGINACIÓN DE LISTADOS
+========================= */
+
+.paginacion {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  gap: 12px;
+  margin: 14px 0;
+  font-size: 13px;
+  color: #71839a;
+}
+
+.paginacion-resumen strong {
+  color: #102a43;
+}
+
+.paginacion-botones {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 4px;
+}
+
+.paginacion-botones button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 34px;
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid #d7e0ea;
+  border-radius: 8px;
+  background: #ffffff;
+  color: #102a43;
+  font: inherit;
+  font-size: 13px;
+  cursor: pointer;
+}
+
+.paginacion-botones button:hover:not(:disabled) {
+  border-color: #0b239c;
+  color: #0b239c;
+}
+
+.paginacion-botones button.activa {
+  border-color: #0b239c;
+  background: #0b239c;
+  color: #ffffff;
+  font-weight: 700;
+}
+
+.paginacion-botones button:disabled {
+  opacity: 0.45;
+  cursor: default;
+}
+
+.paginacion-salto {
+  padding: 0 4px;
+}
+
+.paginacion-tamano {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.paginacion-tamano select {
+  height: 34px;
+  padding: 0 8px;
+  border: 1px solid #d7e0ea;
+  border-radius: 8px;
+  background: #ffffff;
+  font: inherit;
+  font-size: 13px;
+  color: #102a43;
+}

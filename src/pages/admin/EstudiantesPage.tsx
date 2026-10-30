@@ -3,9 +3,10 @@ import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
 import { mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
 import FiltrosBusqueda, {
-  normalizarBusqueda,
   opcionesUnicas,
 } from "../../Componentes/FiltrosBusqueda/FiltrosBusqueda";
+import Paginacion from "../../Componentes/Paginacion/Paginacion";
+import { usePaginado } from "../../Componentes/Paginacion/usePaginado";
 
 interface Estudiante {
   idEstudiante: number;
@@ -32,9 +33,22 @@ interface AnioEscolar {
   activo: boolean;
 }
 
+interface OpcionesFiltros {
+  centros: string[];
+  combinaciones: {
+    centro: string | null;
+    nivel: string | null;
+    grado: string | null;
+    curso: string | null;
+  }[];
+}
+
 const EstudiantesPage = () => {
-  const [estudiantes, setEstudiantes] = useState<Estudiante[]>([]);
   const [anios, setAnios] = useState<AnioEscolar[]>([]);
+  const [opciones, setOpciones] = useState<OpcionesFiltros>({
+    centros: [],
+    combinaciones: [],
+  });
   const [archivo, setArchivo] = useState<File | null>(null);
   const [idAnioEscolar, setIdAnioEscolar] = useState("");
   const [resultado, setResultado] = useState<any>(null);
@@ -47,28 +61,44 @@ const EstudiantesPage = () => {
   const [filtroCurso, setFiltroCurso] = useState("");
   const [filtroEstado, setFiltroEstado] = useState("");
 
-  const cargarDatos = async () => {
-    try {
-      setCargando(true);
+  const listado = usePaginado<Estudiante>("/Estudiantes/paginado", {
+    busqueda: busqueda.trim(),
+    centro: filtroCentro,
+    nivel: filtroNivel,
+    grado: filtroGrado,
+    curso: filtroCurso,
+    estado: filtroEstado,
+  });
+  const estudiantes = listado.items;
 
-      const [resEstudiantes, resAnios] = await Promise.all([
-        api.get("/Estudiantes"),
+  useEffect(() => {
+    if (listado.error) {
+      console.error("Error cargando estudiantes:", listado.error);
+      toast.error("No se pudieron cargar los estudiantes.");
+    }
+  }, [listado.error]);
+
+  const cargarOpciones = async () => {
+    try {
+      const [resAnios, resFiltros] = await Promise.all([
         api.get("/AniosEscolares"),
+        api.get("/Estudiantes/filtros"),
       ]);
 
-      setEstudiantes(resEstudiantes.data);
       setAnios(resAnios.data);
+      setOpciones(resFiltros.data);
     } catch (error) {
-      console.error("Error cargando estudiantes:", error);
-      toast.error("No se pudieron cargar los estudiantes.");
-    } finally {
-      setCargando(false);
+      console.error("Error cargando opciones:", error);
     }
   };
 
   useEffect(() => {
-    cargarDatos();
+    cargarOpciones();
   }, []);
+
+  const cargarDatos = async () => {
+    await Promise.all([listado.recargar(), cargarOpciones()]);
+  };
 
   const importarExcel = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -112,32 +142,17 @@ const EstudiantesPage = () => {
 
   // Cada filtro solo ofrece opciones que existen con los filtros anteriores
   const porCentro = useMemo(
-    () => estudiantes.filter((e) => !filtroCentro || e.centro === filtroCentro),
-    [estudiantes, filtroCentro]
+    () => opciones.combinaciones.filter((c) => !filtroCentro || c.centro === filtroCentro),
+    [opciones, filtroCentro]
   );
   const porNivel = useMemo(
-    () => porCentro.filter((e) => !filtroNivel || nivelDe(e) === filtroNivel),
+    () => porCentro.filter((c) => !filtroNivel || c.nivel === filtroNivel),
     [porCentro, filtroNivel]
   );
   const porGrado = useMemo(
-    () => porNivel.filter((e) => !filtroGrado || e.grado === filtroGrado),
+    () => porNivel.filter((c) => !filtroGrado || c.grado === filtroGrado),
     [porNivel, filtroGrado]
   );
-
-  const estudiantesFiltrados = useMemo(() => {
-    const texto = normalizarBusqueda(busqueda);
-
-    return porGrado.filter((e) => {
-      if (filtroCurso && e.cursoActual !== filtroCurso) return false;
-      if (filtroEstado === "Activo" && !e.activo) return false;
-      if (filtroEstado === "Inactivo" && e.activo) return false;
-
-      if (!texto) return true;
-
-      return [e.nombres, e.apellidos, `${e.nombres} ${e.apellidos}`, e.matricula, e.usuario, e.correo]
-        .some((campo) => normalizarBusqueda(campo).includes(texto));
-    });
-  }, [porGrado, busqueda, filtroCurso, filtroEstado]);
 
   const limpiarFiltros = () => {
     setBusqueda("");
@@ -237,16 +252,14 @@ const EstudiantesPage = () => {
       <FiltrosBusqueda
         busqueda={busqueda}
         onBusqueda={setBusqueda}
-        placeholder="Buscar por nombre, matrícula o usuario..."
-        total={estudiantes.length}
-        filtrados={estudiantesFiltrados.length}
+        placeholder="Buscar por nombre, matrícula o correo..."
         onLimpiar={limpiarFiltros}
         filtros={[
           {
             clave: "centro",
             etiqueta: "Centro",
             valor: filtroCentro,
-            opciones: opcionesUnicas(estudiantes.map((e) => e.centro)),
+            opciones: opcionesUnicas(opciones.centros),
             onChange: (v) => {
               setFiltroCentro(v);
               setFiltroNivel("");
@@ -258,7 +271,7 @@ const EstudiantesPage = () => {
             clave: "nivel",
             etiqueta: "Nivel",
             valor: filtroNivel,
-            opciones: opcionesUnicas(porCentro.map(nivelDe)),
+            opciones: opcionesUnicas(porCentro.map((c) => c.nivel)),
             onChange: (v) => {
               setFiltroNivel(v);
               setFiltroGrado("");
@@ -269,7 +282,7 @@ const EstudiantesPage = () => {
             clave: "grado",
             etiqueta: "Grado",
             valor: filtroGrado,
-            opciones: opcionesUnicas(porNivel.map((e) => e.grado)),
+            opciones: opcionesUnicas(porNivel.map((c) => c.grado)),
             onChange: (v) => {
               setFiltroGrado(v);
               setFiltroCurso("");
@@ -279,7 +292,7 @@ const EstudiantesPage = () => {
             clave: "curso",
             etiqueta: "Curso",
             valor: filtroCurso,
-            opciones: opcionesUnicas(porGrado.map((e) => e.cursoActual)),
+            opciones: opcionesUnicas(porGrado.map((c) => c.curso)),
             onChange: setFiltroCurso,
           },
           {
@@ -313,22 +326,20 @@ const EstudiantesPage = () => {
         </thead>
 
         <tbody>
-          {cargando ? (
+          {listado.cargando && estudiantes.length === 0 ? (
             <tr>
               <td colSpan={12} style={{ textAlign: "center" }}>
                 Cargando estudiantes...
               </td>
             </tr>
-          ) : estudiantesFiltrados.length === 0 ? (
+          ) : estudiantes.length === 0 ? (
             <tr>
               <td colSpan={12} style={{ textAlign: "center" }}>
-                {estudiantes.length === 0
-                  ? "No hay estudiantes para mostrar."
-                  : "Ningún estudiante coincide con los filtros."}
+                No hay estudiantes que coincidan.
               </td>
             </tr>
           ) : (
-            estudiantesFiltrados.map((e) => (
+            estudiantes.map((e) => (
               <tr key={e.idEstudiante}>
                 <td>{e.idEstudiante}</td>
 
@@ -373,6 +384,16 @@ const EstudiantesPage = () => {
         </tbody>
       </table>
       </div>
+
+      <Paginacion
+        pagina={listado.pagina}
+        totalPaginas={listado.totalPaginas}
+        total={listado.total}
+        tamanoPagina={listado.tamanoPagina}
+        onPagina={listado.setPagina}
+        onTamano={listado.cambiarTamano}
+        cargando={listado.cargando}
+      />
     </div>
   );
 };

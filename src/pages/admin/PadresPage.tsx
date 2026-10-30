@@ -1,5 +1,9 @@
 import { useEffect, useState } from "react";
 import api from "../../api/axiosConfig";
+import { toast } from "react-toastify";
+import FiltrosBusqueda from "../../Componentes/FiltrosBusqueda/FiltrosBusqueda";
+import Paginacion from "../../Componentes/Paginacion/Paginacion";
+import { usePaginado } from "../../Componentes/Paginacion/usePaginado";
 
 interface Padre {
   idPadre: number;
@@ -24,18 +28,24 @@ interface Hijo {
 }
 
 const PadresPage = () => {
-  const [padres, setPadres] = useState<Padre[]>([]);
   const [hijos, setHijos] = useState<Hijo[]>([]);
   const [padreSeleccionado, setPadreSeleccionado] = useState<Padre | null>(null);
+  const [busqueda, setBusqueda] = useState("");
+  const [filtroEstado, setFiltroEstado] = useState("");
 
-  const cargarPadres = async () => {
-    const res = await api.get("/Padres");
-    setPadres(res.data);
-  };
+  const listado = usePaginado<Padre>("/Padres/paginado", {
+    busqueda: busqueda.trim(),
+    estado: filtroEstado,
+  });
+  const padres = listado.items;
+  const cargarPadres = listado.recargar;
 
   useEffect(() => {
-    cargarPadres();
-  }, []);
+    if (listado.error) {
+      console.error(listado.error);
+      toast.error("No se pudieron cargar los padres.");
+    }
+  }, [listado.error]);
 
   const verHijos = async (padre: Padre) => {
     setPadreSeleccionado(padre);
@@ -75,6 +85,25 @@ const PadresPage = () => {
         </div>
       )}
 
+      <FiltrosBusqueda
+        busqueda={busqueda}
+        onBusqueda={setBusqueda}
+        placeholder="Buscar por nombre, teléfono o correo..."
+        onLimpiar={() => {
+          setBusqueda("");
+          setFiltroEstado("");
+        }}
+        filtros={[
+          {
+            clave: "estado",
+            etiqueta: "Estado",
+            valor: filtroEstado,
+            opciones: ["Activo", "Inactivo"],
+            onChange: setFiltroEstado,
+          },
+        ]}
+      />
+
       <table className="data-table">
         <thead>
           <tr>
@@ -90,6 +119,16 @@ const PadresPage = () => {
         </thead>
 
         <tbody>
+          {padres.length === 0 && (
+            <tr>
+              <td colSpan={8} style={{ textAlign: "center" }}>
+                {listado.cargando
+                  ? "Cargando padres..."
+                  : "No hay padres que coincidan."}
+              </td>
+            </tr>
+          )}
+
           {padres.map((p) => (
             <tr key={p.idPadre}>
               <td>{p.idPadre}</td>
@@ -114,6 +153,16 @@ const PadresPage = () => {
           ))}
         </tbody>
       </table>
+
+      <Paginacion
+        pagina={listado.pagina}
+        totalPaginas={listado.totalPaginas}
+        total={listado.total}
+        tamanoPagina={listado.tamanoPagina}
+        onPagina={listado.setPagina}
+        onTamano={listado.cambiarTamano}
+        cargando={listado.cargando}
+      />
     </div>
   );
 };

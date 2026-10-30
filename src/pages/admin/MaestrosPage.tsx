@@ -3,9 +3,10 @@ import api from "../../api/axiosConfig";
 import { toast } from "react-toastify";
 import { confirmar, mensajeError } from "../../Componentes/Notificaciones/Notificaciones";
 import FiltrosBusqueda, {
-  normalizarBusqueda,
   opcionesUnicas,
 } from "../../Componentes/FiltrosBusqueda/FiltrosBusqueda";
+import Paginacion from "../../Componentes/Paginacion/Paginacion";
+import { usePaginado } from "../../Componentes/Paginacion/usePaginado";
 
 interface Maestro {
   idMaestro: number;
@@ -22,12 +23,17 @@ interface Maestro {
   fechaIngreso: string | null;
   activo: boolean;
   usuario: string | null;
+  niveles: string[];
 }
 
-interface AsignacionMaestro {
-  nivel: string;
-  curso: string;
-  materia: string;
+interface OpcionesFiltros {
+  datos: { centro: string | null; especialidad: string | null }[];
+  asignaciones: {
+    centro: string | null;
+    nivel: string;
+    curso: string;
+    materia: string;
+  }[];
 }
 
 interface Credencial {
@@ -66,14 +72,14 @@ const descargarCredenciales = (credenciales: Credencial[]) => {
 };
 
 const MaestrosPage = () => {
-  const [maestros, setMaestros] = useState<Maestro[]>([]);
   const [archivo, setArchivo] = useState<File | null>(null);
   const [resultado, setResultado] = useState<any>(null);
   const [importando, setImportando] = useState(false);
   const [credenciales, setCredenciales] = useState<Credencial[]>([]);
-  const [asignacionesPorMaestro, setAsignacionesPorMaestro] = useState<
-    Record<number, AsignacionMaestro[]>
-  >({});
+  const [opciones, setOpciones] = useState<OpcionesFiltros>({
+    datos: [],
+    asignaciones: [],
+  });
 
   const [busqueda, setBusqueda] = useState("");
   const [filtroCentro, setFiltroCentro] = useState("");
@@ -84,97 +90,55 @@ const MaestrosPage = () => {
   const [filtroEstado, setFiltroEstado] = useState("");
   const [descargadas, setDescargadas] = useState(false);
 
-  const cargarMaestros = async () => {
-    try {
-      const res = await api.get("/Maestros");
-      setMaestros(res.data);
-    } catch (error) {
-      console.error(error);
+  const listado = usePaginado<Maestro>("/Maestros/paginado", {
+    busqueda: busqueda.trim(),
+    centro: filtroCentro,
+    nivel: filtroNivel,
+    curso: filtroCurso,
+    materia: filtroMateria,
+    especialidad: filtroEspecialidad,
+    estado: filtroEstado,
+  });
+  const maestros = listado.items;
+
+  useEffect(() => {
+    if (listado.error) {
+      console.error(listado.error);
       toast.error("No se pudieron cargar los maestros.");
     }
-  };
+  }, [listado.error]);
 
-  // Nivel, curso y materia de cada maestro salen de sus asignaciones activas
-  const cargarAsignaciones = async () => {
+  const cargarOpciones = async () => {
     try {
-      const [resAsignaciones, resCursos] = await Promise.all([
-        api.get("/AsignacionesDocentes"),
-        api.get("/Cursos"),
-      ]);
-
-      const nivelPorCurso = new Map<number, string>(
-        resCursos.data.map((c: any) => [c.idCurso, c.nivel])
-      );
-
-      const mapa: Record<number, AsignacionMaestro[]> = {};
-
-      for (const a of resAsignaciones.data) {
-        if (a.activo === false) continue;
-
-        (mapa[a.idMaestro] ??= []).push({
-          nivel: nivelPorCurso.get(a.idCurso) ?? "",
-          curso: [a.grado, a.curso].filter(Boolean).join(" - "),
-          materia: a.materia ?? "",
-        });
-      }
-
-      setAsignacionesPorMaestro(mapa);
+      const res = await api.get("/Maestros/filtros");
+      setOpciones(res.data);
     } catch (error) {
-      // Sin asignaciones, la página sigue funcionando sin esos filtros
-      console.error("No se pudieron cargar las asignaciones:", error);
+      // Sin opciones, la página sigue funcionando sin esos filtros
+      console.error("No se pudieron cargar las opciones de filtros:", error);
     }
   };
 
   useEffect(() => {
-    cargarMaestros();
-    cargarAsignaciones();
+    cargarOpciones();
   }, []);
 
-  const asignacionesDe = (m: Maestro) =>
-    asignacionesPorMaestro[m.idMaestro] ?? [];
+  const cargarMaestros = async () => {
+    await Promise.all([listado.recargar(), cargarOpciones()]);
+  };
 
   // Cada filtro solo ofrece opciones que existen con los filtros anteriores
-  const porCentro = useMemo(
-    () => maestros.filter((m) => !filtroCentro || m.centro === filtroCentro),
-    [maestros, filtroCentro]
+  const datosPorCentro = useMemo(
+    () => opciones.datos.filter((d) => !filtroCentro || d.centro === filtroCentro),
+    [opciones, filtroCentro]
   );
-
-  const porNivel = useMemo(
-    () =>
-      porCentro.filter(
-        (m) => !filtroNivel || asignacionesDe(m).some((a) => a.nivel === filtroNivel)
-      ),
-    [porCentro, filtroNivel, asignacionesPorMaestro]
+  const asignacionesPorCentro = useMemo(
+    () => opciones.asignaciones.filter((a) => !filtroCentro || a.centro === filtroCentro),
+    [opciones, filtroCentro]
   );
-
-  const asignacionesVisibles = (m: Maestro) =>
-    asignacionesDe(m).filter((a) => !filtroNivel || a.nivel === filtroNivel);
-
-  const maestrosFiltrados = useMemo(() => {
-    const texto = normalizarBusqueda(busqueda);
-
-    return porNivel.filter((m) => {
-      const asignaciones = asignacionesVisibles(m);
-
-      if (filtroCurso && !asignaciones.some((a) => a.curso === filtroCurso)) return false;
-      if (filtroMateria && !asignaciones.some((a) => a.materia === filtroMateria)) return false;
-      if (filtroEspecialidad && m.especialidad !== filtroEspecialidad) return false;
-      if (filtroEstado === "Activo" && !m.activo) return false;
-      if (filtroEstado === "Inactivo" && m.activo) return false;
-
-      if (!texto) return true;
-
-      return [
-        m.nombres,
-        m.apellidos,
-        `${m.nombres} ${m.apellidos}`,
-        m.usuario,
-        m.cedula,
-        m.codigoEmpleado,
-        m.correo,
-      ].some((campo) => normalizarBusqueda(campo).includes(texto));
-    });
-  }, [porNivel, busqueda, filtroNivel, filtroCurso, filtroMateria, filtroEspecialidad, filtroEstado, asignacionesPorMaestro]);
+  const asignacionesPorNivel = useMemo(
+    () => asignacionesPorCentro.filter((a) => !filtroNivel || a.nivel === filtroNivel),
+    [asignacionesPorCentro, filtroNivel]
+  );
 
   const limpiarFiltros = () => {
     setBusqueda("");
@@ -439,15 +403,13 @@ const MaestrosPage = () => {
         busqueda={busqueda}
         onBusqueda={setBusqueda}
         placeholder="Buscar por nombre, usuario, cédula o código..."
-        total={maestros.length}
-        filtrados={maestrosFiltrados.length}
         onLimpiar={limpiarFiltros}
         filtros={[
           {
             clave: "centro",
             etiqueta: "Centro",
             valor: filtroCentro,
-            opciones: opcionesUnicas(maestros.map((m) => m.centro)),
+            opciones: opcionesUnicas(opciones.datos.map((d) => d.centro)),
             onChange: (v) => {
               setFiltroCentro(v);
               setFiltroNivel("");
@@ -459,9 +421,7 @@ const MaestrosPage = () => {
             clave: "nivel",
             etiqueta: "Nivel",
             valor: filtroNivel,
-            opciones: opcionesUnicas(
-              porCentro.flatMap((m) => asignacionesDe(m).map((a) => a.nivel))
-            ),
+            opciones: opcionesUnicas(asignacionesPorCentro.map((a) => a.nivel)),
             onChange: (v) => {
               setFiltroNivel(v);
               setFiltroCurso("");
@@ -472,25 +432,21 @@ const MaestrosPage = () => {
             clave: "curso",
             etiqueta: "Curso",
             valor: filtroCurso,
-            opciones: opcionesUnicas(
-              porNivel.flatMap((m) => asignacionesVisibles(m).map((a) => a.curso))
-            ),
+            opciones: opcionesUnicas(asignacionesPorNivel.map((a) => a.curso)),
             onChange: setFiltroCurso,
           },
           {
             clave: "materia",
             etiqueta: "Materia",
             valor: filtroMateria,
-            opciones: opcionesUnicas(
-              porNivel.flatMap((m) => asignacionesVisibles(m).map((a) => a.materia))
-            ),
+            opciones: opcionesUnicas(asignacionesPorNivel.map((a) => a.materia)),
             onChange: setFiltroMateria,
           },
           {
             clave: "especialidad",
             etiqueta: "Especialidad",
             valor: filtroEspecialidad,
-            opciones: opcionesUnicas(porCentro.map((m) => m.especialidad)),
+            opciones: opcionesUnicas(datosPorCentro.map((d) => d.especialidad)),
             onChange: setFiltroEspecialidad,
           },
           {
@@ -525,17 +481,17 @@ const MaestrosPage = () => {
         </thead>
 
         <tbody>
-          {maestrosFiltrados.length === 0 && (
+          {maestros.length === 0 && (
             <tr>
               <td colSpan={10} style={{ textAlign: "center" }}>
-                {maestros.length === 0
-                  ? "No hay maestros para mostrar."
-                  : "Ningún maestro coincide con los filtros."}
+                {listado.cargando
+                  ? "Cargando maestros..."
+                  : "No hay maestros que coincidan."}
               </td>
             </tr>
           )}
 
-          {maestrosFiltrados.map((m) => (
+          {maestros.map((m) => (
             <tr key={m.idMaestro}>
               <td>
                 {m.idMaestro}
@@ -554,7 +510,7 @@ const MaestrosPage = () => {
               </td>
 
               <td>
-                {opcionesUnicas(asignacionesDe(m).map((a) => a.nivel)).join(", ") || "—"}
+                {opcionesUnicas(m.niveles ?? []).join(", ") || "—"}
               </td>
 
               <td>
@@ -593,6 +549,16 @@ const MaestrosPage = () => {
         </tbody>
       </table>
       </div>
+
+      <Paginacion
+        pagina={listado.pagina}
+        totalPaginas={listado.totalPaginas}
+        total={listado.total}
+        tamanoPagina={listado.tamanoPagina}
+        onPagina={listado.setPagina}
+        onTamano={listado.cambiarTamano}
+        cargando={listado.cargando}
+      />
     </div>
   );
 };

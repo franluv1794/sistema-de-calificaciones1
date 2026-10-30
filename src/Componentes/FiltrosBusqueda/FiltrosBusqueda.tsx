@@ -14,8 +14,9 @@ interface Props {
   onBusqueda: (valor: string) => void;
   placeholder?: string;
   filtros: FiltroSelect[];
-  total: number;
-  filtrados: number;
+  /** Sin total no se muestra el contador (p. ej. cuando la tabla está paginada) */
+  total?: number;
+  filtrados?: number;
   onLimpiar: () => void;
 }
 
@@ -82,9 +83,13 @@ const FiltrosBusqueda = ({
       </div>
 
       <div className="filtros-resumen">
-        <span>
-          Mostrando <strong>{filtrados}</strong> de <strong>{total}</strong>
-        </span>
+        {total !== undefined ? (
+          <span>
+            Mostrando <strong>{filtrados}</strong> de <strong>{total}</strong>
+          </span>
+        ) : (
+          <span />
+        )}
 
         {hayFiltros && (
           <button type="button" className="filtros-limpiar" onClick={onLimpiar}>
